@@ -1,0 +1,12 @@
+
+version: '1.0.0'
+
+models:
+  - name: raw_customer
+    description: "A starter dbt model"
+    columns:
+      - name: raw_customer_hash_key
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - unique

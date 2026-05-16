@@ -1,0 +1,15 @@
+
+dp_sales_dbt:
+  outputs:
+    DW_DEV:
+      type: duckdb
+      path: DW_DEV.duckdb
+      threads: 1
+
+    prod:
+      type: duckdb
+      path: DW_PROD.duckdb
+      schema: DW_SALES_RAW
+      threads: 4
+
+  target: DW_DEV

@@ -1,0 +1,25 @@
+version: '1.0.0'
+sources:
+  - name: external_source
+    tables:
+      - name: customer
+        config:
+          external_location: "read_csv('../data/customer*.csv', filename=true)"
+      - name: kafka_stream
+        config:
+          external_location: "read_csv('../data/kafka_stream*.csv', filename=true)"
+      - name: product_category
+        config:
+          external_location: "read_csv('../data/product_category*.csv', filename=true)"
+      - name: product
+        config:
+          external_location: "read_csv('../data/product(?!_category).*.csv', filename=true)"
+      - name: sales_fact
+        config:
+          external_location: "read_csv('../data/sales_fact*.csv', filename=true)"
+      - name: subscription_data
+        config:
+          external_location: "read_csv('../data/subscription_data*.csv', filename=true)"
+      - name: weather_data
+        config:
+          external_location: "read_csv('../data/weather_data*.csv', filename=true)"
