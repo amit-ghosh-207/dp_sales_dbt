@@ -4,6 +4,8 @@ on:
   push:
     branches-ignore:
       - 'master'
+env:
+  DBT_PROFILES_DIR: ./dp_sales_dbt
 
 jobs:
   # this job runs SQLFluff with a specific set of rules
