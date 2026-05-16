@@ -4,8 +4,6 @@ on:
   push:
     branches-ignore:
       - 'master'
-env:
-  DBT_PROFILES_DIR: ./dp_sales_dbt
 
 jobs:
   # this job runs SQLFluff with a specific set of rules
@@ -19,4 +17,4 @@ jobs:
       - name: dbt-action
         uses: mwhitaker/dbt-action@master
           dbt_command: "dbt deps && dbt run && dbt test"
-          dbt_project_folder: "dbt_project"
+          dbt_project_folder: "dp_sales_dbt"
