@@ -7,6 +7,78 @@ models:
     columns:
       - name: raw_customer_hash_key
         description: "The primary key for this table"
+        config:
+          meta:
+            contains_pii: true 
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        description: "The primary key for this table"
+        config:
+          meta:
+            contains_pii: true 
+      - name: customer_name
+        description: "The primary key for this table"
+        config:
+          meta:
+            contains_pii: true 
+      - name: customer_email
+        description: "The primary key for this table"
+        config:
+          meta:
+            contains_pii: true 
+  - name: raw_product
+    description: "A starter dbt model"
+    columns:
+      - name: raw_product_hash_key
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - unique
+      - name: product_id
+        description: "The primary key for this table"
+      - name: product_name
+        description: "The primary key for this table"
+      - name: product_category_id
+        description: "The primary key for this table"
+  - name: raw_product_category
+    description: "A starter dbt model"
+    columns:
+      - name: raw_product_category_hash_key
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - unique
+  - name: raw_sales
+    description: "A starter dbt model"
+    columns:
+      - name: raw_sales_hash_key
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - unique
+  - name: raw_subscription
+    description: "A starter dbt model"
+    columns:
+      - name: raw_subscription_hash_key
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - unique
+  - name: raw_weather
+    description: "A starter dbt model"
+    columns:
+      - name: raw_weather_hash_key
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - unique
+  - name: raw_customer_interaction
+    description: "A starter dbt model"
+    columns:
+      - name: raw_customer_interaction_hash_key
+        description: "The primary key for this table"
         tests:
           - not_null
           - unique

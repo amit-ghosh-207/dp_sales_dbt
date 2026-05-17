@@ -1,0 +1,3 @@
+customer_id,customer_name,customer_email,start_date,end_date,status, scema_drift
+CUST1009,Amit Ghosh,amit.smith11@email.com,2023-01-16,2024-12-31,active, true
+CUST1011,Amit Smith,amit.smith21@email.com,2023-01-16,2024-12-31,active, true
