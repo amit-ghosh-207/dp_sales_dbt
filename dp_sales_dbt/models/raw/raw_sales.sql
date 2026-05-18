@@ -1,6 +1,6 @@
 {{
     config (
-      unique_key = "raw_sales_hash_key",
+      unique_key = "sales_hash_diff",
       tags = ["core", "events"]
     )
 }}
@@ -25,11 +25,9 @@ SELECT
       COALESCE(payment_method, 'default_value'),
       COALESCE(discount_applied, 'default_value'),
       COALESCE(shipping_cost, 'default_value'),
-      COALESCE(created_at, 'default_value'),
-      filename,
-      load_ts
+      COALESCE(created_at, 'default_value')
     )
-  ) AS raw_sales_hash_key,
+  ) AS sales_hash_diff,
   *
 FROM cte_raw_sales
 

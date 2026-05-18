@@ -19,8 +19,7 @@
             "alias": "DW_DEV",
             "type": "file",
             "path": "/home/amit/Documents/Analytics_Workspace/dp_sales_dbt/dp_sales_dbt/DW_DEV.duckdb",
-            "attached": true,
-            "readOnly": false
+            "attached": false
         }
     ],
     "duckdb.defaultDatabase": "DW_DEV",

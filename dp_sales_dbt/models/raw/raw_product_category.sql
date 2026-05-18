@@ -1,6 +1,6 @@
 {{
     config (
-      unique_key = "raw_product_category_hash_key",
+      unique_key = "product_category_hash_diff",
       tags = ["core", "events"]
     )
 }}
@@ -29,11 +29,9 @@ SELECT
       COALESCE(reorder_point, 'default_value'),
       COALESCE(discontinued, 'default_value'),
       COALESCE(launch_date, 'default_value'),
-      COALESCE(last_updated, 'default_value'),
-      filename,
-      load_ts
+      COALESCE(last_updated, 'default_value')
     )
-  ) AS raw_product_category_hash_key,
+  ) AS product_category_hash_diff,
   *
 FROM cte_raw_product_category
 

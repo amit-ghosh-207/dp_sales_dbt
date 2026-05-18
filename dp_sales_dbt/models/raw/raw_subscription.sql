@@ -1,6 +1,6 @@
 {{
     config (
-      unique_key = "raw_subscription_hash_key",
+      unique_key = "subscription_hash_diff",
       tags = ["core", "events"]
     )
 }}
@@ -21,12 +21,9 @@ SELECT
       COALESCE(plan_type, 'default_value'),
       COALESCE(subscription_start_date, 'default_value'),
       COALESCE(subscription_end_date, 'default_value'),
-      COALESCE(monthly_fee, 'default_value'),
-      COALESCE(status, 'default_value'),
-      filename,
-      load_ts
+      COALESCE(monthly_fee, 'default_value')
     )
-  ) AS raw_subscription_hash_key,
+  ) AS subscription_hash_diff,
   *
 FROM cte_raw_subscription
 

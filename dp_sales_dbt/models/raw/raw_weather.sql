@@ -1,6 +1,6 @@
 {{
     config (
-      unique_key = "raw_weather_hash_key",
+      unique_key = "weather_hash_diff",
       tags = ["core", "events"]
     )
 }}
@@ -19,11 +19,9 @@ SELECT
       COALESCE(date, 'default_value'),
       COALESCE(temperature, 'default_value'),
       COALESCE(precipitation, 'default_value'),
-      COALESCE(city, 'default_value'),
-      filename,
-      load_ts
+      COALESCE(city, 'default_value')
     )
-  ) AS raw_weather_hash_key,
+  ) AS weather_hash_diff,
   *
 FROM cte_raw_weather
 

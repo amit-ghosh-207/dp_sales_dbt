@@ -1,0 +1,16 @@
+snapshots:
+  - name: stg_customer
+    relation: ref('raw_customer')
+    config:
+      schema: DW_SALES_STG
+      unique_key: customer_id
+      strategy: check
+      check_cols: [customer_name, customer_email, start_date, end_date, status]
+      snapshot_meta_column_names:
+        dbt_valid_from: valid_from
+        dbt_valid_to: valid_to
+        dbt_scd_id: scd_id
+        dbt_updated_at: updated_at
+        dbt_is_deleted: is_deleted
+      hard_deletes: invalidate
+      dbt_valid_to_current: "CAST('9999-12-31' AS DATE)"

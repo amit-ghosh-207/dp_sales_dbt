@@ -1,6 +1,6 @@
 {{
     config (
-      unique_key = "raw_customer_interaction_hash_key",
+      unique_key = "customer_interaction_hash_diff",
       tags = ["core", "events"]
     )
 }}
@@ -23,7 +23,7 @@ SELECT
       filename,
       load_ts
     )
-  ) AS raw_customer_interaction_hash_key,
+  ) AS customer_interaction_hash_diff,
   *
 FROM cte_raw_customer_interaction
 
