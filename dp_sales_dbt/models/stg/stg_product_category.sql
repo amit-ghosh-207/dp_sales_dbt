@@ -1,6 +1,6 @@
 {{
     config (
-      unique_key = ["product_category_hash_diff", "filename"],
+      unique_key = ["product_category_hash_diff", "source_file_name"],
       tags = ["core", "events"]
     )
 }}
@@ -21,7 +21,7 @@ WITH
       reorder_point::INTEGER as reorder_point,
       discontinued::BOOLEAN as discontinued,
       CAST(launch_date AS DATE) as launch_date,
-      CAST(last_updated AS DATE) as last_updated_date,
+      CAST(last_updated AS DATE) as source_last_updated_date,
       filename,
       load_ts as raw_load_ts
     FROM
@@ -42,8 +42,8 @@ SELECT
   reorder_point,
   discontinued,
   launch_date,
-  last_updated_date,
-  filename,
+  source_last_updated_date,
+  filename as source_file_name,
   get_current_timestamp() AS load_ts
 FROM cte_raw_product_category
 
@@ -51,7 +51,7 @@ FROM cte_raw_product_category
 WHERE
   raw_load_ts > (
     SELECT
-      load_ts
+      max(load_ts)
     FROM
       {{this}}
   ) 

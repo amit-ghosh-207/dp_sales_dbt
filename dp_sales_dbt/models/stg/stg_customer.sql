@@ -1,6 +1,6 @@
 {{
     config (
-      unique_key = ["customer_hash_diff", "filename"],
+      unique_key = ["customer_hash_diff", "source_file_name"],
       tags = ["core", "events"]
     )
 }}
@@ -27,7 +27,7 @@ SELECT
   start_date,
   end_date,
   status,
-  filename,
+  filename as source_file_name,
   get_current_timestamp() AS load_ts
 FROM cte_raw_customer
 
@@ -35,7 +35,7 @@ FROM cte_raw_customer
 WHERE
   raw_load_ts > (
     SELECT
-      load_ts
+      max(load_ts)
     FROM
       {{this}}
   ) 

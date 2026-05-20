@@ -5,4 +5,13 @@ packages:
   - name: dbt_unit_testing
     package: EqualExperts/dbt_unit_testing
     version: 0.4.12
-sha1_hash: e923d92a94315371564d7502d15e6f4640e20a1a
+  - name: dbt_expectations
+    package: calogica/dbt_expectations
+    version: 0.10.4
+  - git: https://github.com/yu-iskw/dbt-airflow-macros.git
+    name: dbt_airflow_macros
+    revision: 24d63afdb117dab701cdca32c79af2813bf2d5f5
+  - name: dbt_date
+    package: calogica/dbt_date
+    version: 0.10.1
+sha1_hash: 92b09ce9c122effe62e9cd866f92658197e635d3

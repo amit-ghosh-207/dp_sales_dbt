@@ -16,7 +16,7 @@ SELECT
   MD5(
     concat_ws(
       '|',
-      COALESCE(date, 'default_value'),
+      COALESCE("date", 'default_value'),
       COALESCE(temperature, 'default_value'),
       COALESCE(precipitation, 'default_value'),
       COALESCE(city, 'default_value')
