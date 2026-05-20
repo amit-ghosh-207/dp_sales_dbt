@@ -40,5 +40,5 @@ jobs:
           " > ~/.dbt/profiles.yml
 
       - name: dbt Build
-        run: dbt build --target ci --vars '{"ds": "2024-01-01"}'
+        run: dbt build --target ci
         working-directory: dp_sales_dbt
