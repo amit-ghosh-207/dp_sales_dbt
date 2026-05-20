@@ -8,3 +8,4 @@ mkdocs-material
 mkdocs-material-extensions
 mkdocs-pymdownx-material-extras
 mkdocs-mermaid2-plugin
+mkdocs-table-reader-plugin
