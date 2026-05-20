@@ -1,3 +1,6 @@
+-- depends_on: {{ ref('fact_sales') }}
+-- depends_on: {{ ref('dim_date') }}
+
 {{ config(tags=['unit-test']) }}
 
 {% call dbt_unit_testing.test('agg_daily_revenue', 'test_daily_revenue_aggregation_and_missing_dates') %}
