@@ -2,7 +2,7 @@ name: dbt Continuous Integration
 
 on:
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "master" ]
 
 jobs:
   dbt-ci:

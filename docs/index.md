@@ -92,3 +92,5 @@ graph TD
 
     F_S --> A_DR
 ```
++## Data Mapping & Transformations + +The following table provides a detailed lineage of the transformations applied to the data as it moves from the staging layer into the final mart models. + +{{ read_csv('../docs/mart_layer_column_mapping.csv') }}
+
