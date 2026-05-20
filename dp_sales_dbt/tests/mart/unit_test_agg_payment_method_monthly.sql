@@ -1,3 +1,7 @@
+-- depends_on: {{ ref('fact_sales') }}
+-- depends_on: {{ ref('dim_date') }}
+-- depends_on: {{ ref('dim_product') }}
+
 {{ config(tags=['unit-test']) }}
 
 {% call dbt_unit_testing.test('agg_payment_method_monthly_revenue', 'test_payment_method_split_and_percentages') %}

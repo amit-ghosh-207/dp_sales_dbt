@@ -7,6 +7,7 @@ Sales & Revenue Flow:
 fact_sales is the central source for most aggregates.
 agg_payment_method_monthly_revenue joins fact_sales with dim_date and dim_product to create a multifaceted view of revenue.
 agg_monthly_sales_metrics builds directly on top of the monthly revenue aggregate to calculate window-based metrics like quarterly totals and performance indicators.
+
 Customer Insights:
 
 agg_customer_order performs a RIGHT JOIN between fact_sales and dim_customer to ensure all customers are represented (even those without sales) and classifies them into value tiers.

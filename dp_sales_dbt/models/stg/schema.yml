@@ -1,8 +1,8 @@
-version: '1.0.0'
+version: 2
 
 models:
   - name: stg_customer
-    description: "Customer staging dbt model"
+    description: "Staging model for customer data including record history"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -10,7 +10,7 @@ models:
             - source_file_name
     columns:
       - name: customer_hash_diff
-        description: "The primary key for this table"
+        description: "Unique hash representing the customer record for change detection"
         tests:
           - not_null
       - name: customer_id
@@ -18,12 +18,12 @@ models:
         tests:
           - not_null
       - name: customer_name
-        description: "Customer name"
+        description: "Full name of the customer"
         config:
           meta:
             contains_pii: true 
       - name: customer_email
-        description: "Customer email"
+        description: "Customer email address used for communication"
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_match_regex:
@@ -32,15 +32,15 @@ models:
           meta:
             contains_pii: true 
       - name: start_date
-        description: "The primary key for this table"
+        description: "Effective start date for the customer record"
         tests:
           - not_null
       - name: end_date
-        description: "The primary key for this table"
+        description: "Effective end date for the customer record"
         tests:
           - not_null
       - name: status
-        description: "The primary key for this table"
+        description: "Account status (e.g., active, cancelled)"
         tests:
           - not_null
           - accepted_values:
@@ -50,7 +50,7 @@ models:
       - name: load_ts
         description: "Load timestamp"
   - name: stg_product
-    description: "A starter dbt model"
+    description: "Staging model for product master data"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -58,13 +58,13 @@ models:
             - source_file_name
     columns:
       - name: product_hash_diff
-        description: "The primary key for this table"
+        description: "Unique hash for product record change tracking"
         tests:
           - not_null
       - name: product_id
         description: "Product ID"
       - name: product_name
-        description: "Product name"
+        description: "Descriptive name of the product"
       - name: product_category_id
         description: "Product category id"
       - name: source_file_name
@@ -72,7 +72,7 @@ models:
       - name: load_ts
         description: "Load timestamp"
   - name: stg_product_category
-    description: "A starter dbt model"
+    description: "Detailed staging model for product categories and inventory details"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -80,27 +80,27 @@ models:
             - source_file_name
     columns:
       - name: product_category_hash_diff
-        description: "The primary key for this table"
+        description: "Unique hash for product category and attribute change tracking"
         tests:
           - not_null
       - name: product_id
-        description: "Product id"
+        description: "Product identifier"
       - name: category_id
-        description: "Category id"
+        description: "Category identifier"
       - name: category_name
-        description: "Category name"
+        description: "Primary category name"
       - name: subcategory
-        description: "Sub category name"
+        description: "Detailed sub-category name"
       - name: brand
-        description: "Brand name"
+        description: "Brand associated with the product"
       - name: supplier_id
-        description: "Supplier id"
+        description: "Identifier for the product supplier"
       - name: cost_price
-        description: "Cost price"
+        description: "The price at which the item is purchased from the supplier"
       - name: retail_price
-        description: "Retail price"
+        description: "The list price for consumers"
       - name: margin_percent
-        description: "Margin percent"
+        description: "Calculated profit margin percentage"
         tests:
           - dbt_expectations.expect_column_values_to_be_between:
               min_value: 0
@@ -108,21 +108,21 @@ models:
               config:
                 severity: warn
       - name: stock_level
-        description: "Raw file name"
+        description: "Current quantity available in stock"
       - name: reorder_point
-        description: "Raw file name"
+        description: "Minimum stock level before a new order is triggered"
       - name: discontinued
-        description: "Raw file name"
+        description: "Boolean indicating if the product is discontinued"
       - name: launch_date
-        description: "Raw file name"
+        description: "The date the product was officially launched"
       - name: source_last_updated_date
-        description: "Raw file name"
+        description: "Timestamp of last update in the source system"
       - name: source_file_name
         description: "Raw file name"
       - name: load_ts
         description: "Load timestamp"
   - name: stg_sales
-    description: "A starter dbt model"
+    description: "Staging model for transactional sales data"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -130,35 +130,35 @@ models:
             - source_file_name
     columns:
       - name: sales_hash_diff
-        description: "The primary key for this table"
+        description: "Unique hash for the sale transaction"
         tests:
           - not_null
       - name: order_id
-        description: "Order id"
+        description: "Unique identifier for the order"
         tests:
           - not_null
       - name: product_id
-        description: "Product id"
+        description: "Reference to the product purchased"
         tests:
           - not_null
       - name: customer_id
-        description: "Customer id"
+        description: "Reference to the customer who made the purchase"
         tests:
           - not_null
       - name: order_date
-        description: "Order date"
+        description: "The date the order was placed"
         tests:
           - not_null
       - name: order_amount
-        description: "Order amount"
+        description: "Gross total value of the order"
         tests:
           - not_null
       - name: order_quantity
-        description: "Order quantity"
+        description: "Number of units purchased"
         tests:
           - not_null
       - name: payment_method
-        description: "Payment method"
+        description: "Method used for payment (e.g., paypal, credit_card)"
         tests:
           - not_null
           - accepted_values:
@@ -176,7 +176,7 @@ models:
       - name: load_ts
         description: "Load timestamp"
   - name: stg_subscription
-    description: "A starter dbt model"
+    description: "Staging model for customer subscription plans"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -184,7 +184,7 @@ models:
             - source_file_name
     columns:
       - name: subscription_hash_diff
-        description: "The primary key for this table"
+        description: "Unique hash for the subscription record"
         tests:
           - not_null
       - name: customer_id
@@ -196,25 +196,25 @@ models:
         tests:
           - not_null
       - name: plan_type
-        description: "Plan type"
+        description: "Type of subscription plan (e.g., Basic, Premium)"
         tests:
           - not_null
           - accepted_values:
               values: ['Enterprise', 'Basic', 'Premium']
       - name: subscription_start_date
-        description: "Subscription staret date"
+        description: "Start date of the subscription period"
         tests:
           - not_null
       - name: subscription_end_date
-        description: "Subscription end date"
+        description: "End date of the subscription period"
         tests:
           - not_null
       - name: monthly_fee
-        description: "Monthlu subscription fee"
+        description: "The recurring monthly cost of the subscription"
         tests:
           - not_null
       - name: status
-        description: "Subscription status"
+        description: "Current status of the subscription"
         tests:
           - not_null
           - accepted_values:
@@ -224,7 +224,7 @@ models:
       - name: load_ts
         description: "Load timestamp"
   - name: stg_weather
-    description: "A starter dbt model"
+    description: "Staging model for external weather data"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -232,23 +232,23 @@ models:
             - source_file_name
     columns:
       - name: weather_hash_diff
-        description: "The primary key for this table"
+        description: "Unique hash for the weather record"
         tests:
           - not_null
       - name: weather_date
-        description: "The primary key for this table"
+        description: "The date of the weather observation"
         tests:
           - not_null
       - name: temperature
-        description: "The primary key for this table"
+        description: "Measured temperature in Celsius"
         tests:
           - not_null
       - name: precipitation
-        description: "The primary key for this table"
+        description: "Amount of precipitation recorded"
         tests:
           - not_null
       - name: city
-        description: "The primary key for this table"
+        description: "The city where the observation was made"
         tests:
           - not_null
       - name: source_file_name
@@ -256,7 +256,7 @@ models:
       - name: load_ts
         description: "Load timestamp"
   - name: stg_customer_interaction
-    description: "A starter dbt model"
+    description: "Staging model for customer behavioral events"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -264,25 +264,25 @@ models:
             - source_file_name
     columns:
       - name: customer_interaction_hash_diff
-        description: "The primary key for this table"
+        description: "Unique hash for the interaction event"
         tests:
           - not_null
       - name: customer_id
-        description: "The primary key for this table"
+        description: "Identifier for the interacting customer"
         tests:
           - not_null
       - name: product_id
-        description: "The primary key for this table"
+        description: "Identifier for the product involved in the interaction"
         tests:
           - not_null
       - name: interaction_type
-        description: "The primary key for this table"
+        description: "Type of interaction (e.g., view, add_to_cart)"
         tests:
           - not_null
           - accepted_values:
               values: ['view', 'purchase', 'add_to_cart']
       - name: interaction_ts
-        description: "The primary key for this table"
+        description: "Timestamp of the interaction event"
         tests:
           - not_null
       - name: source_file_name

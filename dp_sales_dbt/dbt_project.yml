@@ -18,6 +18,10 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
+dispatch:
+  - macro_namespace: dbt
+    search_order: ['dbt_unit_testing', 'dbt']
+
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"

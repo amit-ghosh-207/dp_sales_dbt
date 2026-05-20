@@ -1,3 +1,6 @@
+-- depends_on: {{ ref('fact_sales') }}
+-- depends_on: {{ ref('dim_customer') }}
+
 {{ config(tags=['unit-test']) }}
 
 {% call dbt_unit_testing.test('agg_customer_order', 'test_customer_segmentation_logic') %}
