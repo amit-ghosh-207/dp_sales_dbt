@@ -5,7 +5,7 @@ snapshots:
       schema: DW_SALES_MART
       unique_key: customer_id
       strategy: check
-      check_cols: [customer_has_diff]
+      check_cols: [customer_hash_diff]
       snapshot_meta_column_names:
         dbt_valid_from: valid_from
         dbt_valid_to: valid_to
