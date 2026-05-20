@@ -13,8 +13,8 @@ SELECT
     CASE
         WHEN total_order_amount < 500 THEN 'Low Value'
         WHEN total_order_amount < 1000 THEN 'Medium Value'
-        ELSE 'Hight Value'
-    END
+        ELSE 'High Value'
+    END AS customer_tier
 FROM
     {{ ref('fact_sales') }} AS fs
     RIGHT JOIN {{ ref('dim_customer') }} AS dc ON fs.customer_id = dc.customer_id

@@ -11,7 +11,7 @@ WITH cte_agg_revenue as
             dd.month_key,
             dp.product_category_id,
             sum(fs.order_amount) AS total_revenue,
-            stddev_pop(fs.order_amount)/avg(fs.order_amount)as monthly_order_volatility,
+            stddev_pop(fs.order_amount)/avg(fs.order_amount) AS monthly_order_volatility,
             coalesce(
                 sum(
                     CASE

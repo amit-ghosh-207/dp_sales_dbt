@@ -1,0 +1,139 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: "Standard calendar dimension table."
+    columns:
+      - name: date_key
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_customer
+    description: "Customer dimension table."
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+
+  - name: dim_product
+    description: "Product dimension table."
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+          - unique
+
+  - name: fact_sales
+    description: "Core sales transactions fact table."
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: customer_id
+      - name: product_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_product')
+              field: product_id
+      - name: order_date
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: payment_method
+        tests:
+          - accepted_values:
+              values: ['paypal', 'credit_card', 'debit_card', 'bank_transfer']
+
+  - name: fact_customer_interaction
+    description: "Fact table for tracking customer engagement events."
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: customer_id
+      - name: interaction_type
+        tests:
+          - accepted_values:
+              values: ['view', 'purchase', 'add_to_cart']
+
+  - name: fact_weather
+    description: "Fact table capturing daily weather data by city."
+    columns:
+      - name: weather_date
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: city
+        tests:
+          - not_null
+
+  - name: fact_review_order
+    description: "Operational view flagging orders with high discounts or shipping costs for audit."
+
+  - name: agg_daily_revenue
+    description: "Aggregation of revenue and order volume by date."
+    columns:
+      - name: order_date
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+  - name: agg_customer_order
+    description: "Metrics for customer lifetime value and segmentation."
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              to: ref('dim_customer')
+              field: customer_id
+      - name: customer_tier
+        description: "Classification of customers: High Value, Medium Value, or Low Value."
+        tests:
+          - accepted_values:
+              values: ['High Value', 'Medium Value', 'Low Value']
+
+  - name: agg_payment_method_order
+    description: "Market share and average value of orders by payment method."
+    columns:
+      - name: payment_method
+        tests:
+          - not_null
+          - unique
+
+  - name: agg_payment_method_monthly_revenue
+    description: "Monthly revenue aggregates per product category with payment method distribution."
+    columns:
+      - name: month_key
+        tests:
+          - not_null
+      - name: product_category_id
+        tests:
+          - not_null
+
+  - name: agg_monthly_sales_metrics
+    description: "Strategic monthly performance indicators including volatility and growth."
+    columns:
+      - name: month_key
+        tests:
+          - not_null
+      - name: product_category_id
+        tests:
+          - not_null
