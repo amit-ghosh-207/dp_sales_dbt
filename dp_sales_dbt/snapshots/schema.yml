@@ -1,0 +1,61 @@
+snapshots:
+  - name: dim_customer
+    relation: ref('stg_customer')
+    config:
+      schema: DW_SALES_MART
+      unique_key: customer_id
+      strategy: check
+      check_cols: [customer_hash_diff]
+      snapshot_meta_column_names:
+        dbt_valid_from: valid_from
+        dbt_valid_to: valid_to
+        dbt_scd_id: scd_id
+        dbt_updated_at: updated_at
+        dbt_is_deleted: is_deleted
+      hard_deletes: invalidate
+      dbt_valid_to_current: "CAST('9999-12-31' AS DATE)"
+  - name: dim_product
+    relation: ref('stg_product')
+    config:
+      schema: DW_SALES_MART
+      unique_key: product_id
+      strategy: check
+      check_cols: [product_hash_diff]
+      snapshot_meta_column_names:
+        dbt_valid_from: valid_from
+        dbt_valid_to: valid_to
+        dbt_scd_id: scd_id
+        dbt_updated_at: updated_at
+        dbt_is_deleted: is_deleted
+      hard_deletes: invalidate
+      dbt_valid_to_current: "CAST('9999-12-31' AS DATE)"
+  - name: dim_product_category
+    relation: ref('stg_product_category')
+    config:
+      schema: DW_SALES_MART
+      unique_key: [product_id, category_id]
+      strategy: timestamp
+      updated_at: source_last_updated_date
+      snapshot_meta_column_names:
+        dbt_valid_from: valid_from
+        dbt_valid_to: valid_to
+        dbt_scd_id: scd_id
+        dbt_updated_at: updated_at
+        dbt_is_deleted: is_deleted
+      hard_deletes: invalidate
+      dbt_valid_to_current: "CAST('9999-12-31' AS DATE)"
+  - name: fact_customer_subscription
+    relation: ref('stg_subscription')
+    config: 
+      schema: DW_SALES_MART
+      unique_key: [customer_id, subscription_id]
+      strategy: check
+      check_cols: [subscription_hash_diff]
+      snapshot_meta_column_names:
+        dbt_valid_from: valid_from
+        dbt_valid_to: valid_to
+        dbt_scd_id: scd_id
+        dbt_updated_at: updated_at
+        dbt_is_deleted: is_deleted
+      hard_deletes: invalidate
+      dbt_valid_to_current: "CAST('9999-12-31' AS DATE)"

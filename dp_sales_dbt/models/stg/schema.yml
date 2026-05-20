@@ -1,0 +1,291 @@
+version: '1.0.0'
+
+models:
+  - name: stg_customer
+    description: "Customer staging dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - customer_hash_diff
+            - source_file_name
+    columns:
+      - name: customer_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: customer_id
+        description: "Customer id"
+        tests:
+          - not_null
+      - name: customer_name
+        description: "Customer name"
+        config:
+          meta:
+            contains_pii: true 
+      - name: customer_email
+        description: "Customer email"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              regex: "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
+        config:
+          meta:
+            contains_pii: true 
+      - name: start_date
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: end_date
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: status
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['active', 'cancelled']
+      - name: source_file_name
+        description: "Raw file name"
+      - name: load_ts
+        description: "Load timestamp"
+  - name: stg_product
+    description: "A starter dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - product_hash_diff
+            - source_file_name
+    columns:
+      - name: product_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: product_id
+        description: "Product ID"
+      - name: product_name
+        description: "Product name"
+      - name: product_category_id
+        description: "Product category id"
+      - name: source_file_name
+        description: "Raw file name"
+      - name: load_ts
+        description: "Load timestamp"
+  - name: stg_product_category
+    description: "A starter dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - product_category_hash_diff
+            - source_file_name
+    columns:
+      - name: product_category_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: product_id
+        description: "Product id"
+      - name: category_id
+        description: "Category id"
+      - name: category_name
+        description: "Category name"
+      - name: subcategory
+        description: "Sub category name"
+      - name: brand
+        description: "Brand name"
+      - name: supplier_id
+        description: "Supplier id"
+      - name: cost_price
+        description: "Cost price"
+      - name: retail_price
+        description: "Retail price"
+      - name: margin_percent
+        description: "Margin percent"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100
+              config:
+                severity: warn
+      - name: stock_level
+        description: "Raw file name"
+      - name: reorder_point
+        description: "Raw file name"
+      - name: discontinued
+        description: "Raw file name"
+      - name: launch_date
+        description: "Raw file name"
+      - name: source_last_updated_date
+        description: "Raw file name"
+      - name: source_file_name
+        description: "Raw file name"
+      - name: load_ts
+        description: "Load timestamp"
+  - name: stg_sales
+    description: "A starter dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - sales_hash_diff
+            - source_file_name
+    columns:
+      - name: sales_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: order_id
+        description: "Order id"
+        tests:
+          - not_null
+      - name: product_id
+        description: "Product id"
+        tests:
+          - not_null
+      - name: customer_id
+        description: "Customer id"
+        tests:
+          - not_null
+      - name: order_date
+        description: "Order date"
+        tests:
+          - not_null
+      - name: order_amount
+        description: "Order amount"
+        tests:
+          - not_null
+      - name: order_quantity
+        description: "Order quantity"
+        tests:
+          - not_null
+      - name: payment_method
+        description: "Payment method"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['paypal', 'credit_card', 'debit_card', 'bank_transfer']
+      - name: discount_applied
+        description: "Discount applied"
+      - name: shipping_cost
+        description: "Shipping cost"
+      - name: created_at
+        description: "Created at"
+        tests:
+          - not_null
+      - name: source_file_name
+        description: "Raw file name"
+      - name: load_ts
+        description: "Load timestamp"
+  - name: stg_subscription
+    description: "A starter dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - subscription_hash_diff
+            - source_file_name
+    columns:
+      - name: subscription_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: customer_id
+        description: "Customer ID"
+        tests:
+          - not_null
+      - name: subscription_id
+        description: "Subscription ID"
+        tests:
+          - not_null
+      - name: plan_type
+        description: "Plan type"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Enterprise', 'Basic', 'Premium']
+      - name: subscription_start_date
+        description: "Subscription staret date"
+        tests:
+          - not_null
+      - name: subscription_end_date
+        description: "Subscription end date"
+        tests:
+          - not_null
+      - name: monthly_fee
+        description: "Monthlu subscription fee"
+        tests:
+          - not_null
+      - name: status
+        description: "Subscription status"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Active', 'Cancelled']
+      - name: source_file_name
+        description: "Raw file name"
+      - name: load_ts
+        description: "Load timestamp"
+  - name: stg_weather
+    description: "A starter dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - weather_hash_diff
+            - source_file_name
+    columns:
+      - name: weather_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: weather_date
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: temperature
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: precipitation
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: city
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: source_file_name
+        description: "Raw file name"
+      - name: load_ts
+        description: "Load timestamp"
+  - name: stg_customer_interaction
+    description: "A starter dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - customer_interaction_hash_diff
+            - source_file_name
+    columns:
+      - name: customer_interaction_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: customer_id
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: product_id
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: interaction_type
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['view', 'purchase', 'add_to_cart']
+      - name: interaction_ts
+        description: "The primary key for this table"
+        tests:
+          - not_null
+      - name: source_file_name
+        description: "Raw file name"
+      - name: load_ts
+        description: "Load timestamp"

@@ -1,0 +1,117 @@
+
+version: '1.0.0'
+
+models:
+  - name: raw_customer
+    description: "A starter dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - customer_hash_diff
+            - filename
+    columns:
+      - name: customer_hash_diff
+        description: "The primary key for this table"
+        config:
+          meta:
+            contains_pii: true 
+        tests:
+          - not_null
+      - name: customer_id
+        description: "The primary key for this table"
+        config:
+          meta:
+            contains_pii: true 
+      - name: customer_name
+        description: "The primary key for this table"
+        config:
+          meta:
+            contains_pii: true 
+      - name: customer_email
+        description: "The primary key for this table"
+        config:
+          meta:
+            contains_pii: true 
+      - name: filename
+        description: "The primary key for this table"
+      - name: load_ts
+        description: "The primary key for this table"
+  - name: raw_product
+    description: "A starter dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - product_hash_diff
+            - filename
+    columns:
+      - name: product_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - unique
+      - name: product_id
+        description: "The primary key for this table"
+      - name: product_name
+        description: "The primary key for this table"
+      - name: product_category_id
+        description: "The primary key for this table"
+  - name: raw_product_category
+    description: "A starter dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - product_category_hash_diff
+            - filename
+    columns:
+      - name: product_category_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - unique
+  - name: raw_sales
+    description: "A starter dbt model"
+    columns:
+      - name: sales_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - unique
+  - name: raw_subscription
+    description: "A starter dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - subscription_hash_diff
+            - filename
+    columns:
+      - name: subscription_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - unique
+  - name: raw_weather
+    description: "A starter dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - weather_hash_diff
+            - filename
+    columns:
+      - name: weather_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - unique
+  - name: raw_customer_interaction
+    description: "A starter dbt model"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - customer_interaction_hash_diff
+            - filename
+    columns:
+      - name: customer_interaction_hash_diff
+        description: "The primary key for this table"
+        tests:
+          - not_null
+          - unique

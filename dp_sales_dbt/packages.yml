@@ -1,0 +1,10 @@
+
+packages:
+  - package: dbt-labs/dbt_utils
+    version: [">=0.7.3", "<2.0.0"]
+  - package: EqualExperts/dbt_unit_testing
+    version: 0.4.12
+  - package: calogica/dbt_expectations
+    version: [">=0.10.0", "<0.11.0"]
+  - git: "https://github.com/yu-iskw/dbt-airflow-macros.git"
+    revision: 0.3.0
