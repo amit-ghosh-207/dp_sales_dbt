@@ -1,7 +1,6 @@
 {{
     config (
-      unique_key = ["subscription_hash_diff", "source_file_name"],
-      tags = ["core", "events"]
+      unique_key = ["subscription_hash_diff", "source_file_name"]
     )
 }}
 WITH

@@ -1,0 +1,4 @@
+customer_id,customer_name,customer_email,start_date,end_date,status
+CUST001,John Smith,john.smith@email.com,2023-01-15,2029-12-31,active
+CUST002,Sarah Johnson,sarah.johnson@email.com,2023-02-20,2024-12-31,cancelled
+

@@ -1,7 +1,6 @@
 {{
     config (
-      unique_key = ["order_id", "product_id", "customer_id", "order_date"],
-      tags = ["core", "events"]
+      unique_key = ["order_id", "product_id", "customer_id", "order_date"]
     )
 }}
 

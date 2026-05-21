@@ -1,7 +1,6 @@
 {{
     config (
-      unique_key = ["month_key", "product_category_id"],
-      tags = ["core", "events"]
+      unique_key = ["month_key", "product_category_id"]
     )
 }}
 

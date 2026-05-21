@@ -1,7 +1,6 @@
 {{
     config (
-      unique_key = "weather_hash_diff",
-      tags = ["core", "events"]
+      unique_key = "weather_hash_diff"
     )
 }}
 WITH

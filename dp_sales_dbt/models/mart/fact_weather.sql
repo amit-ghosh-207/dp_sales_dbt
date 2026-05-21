@@ -1,7 +1,6 @@
 {{
     config (
-      unique_key = ["weather_date", "city"],
-      tags = ["core", "events"]
+      unique_key = ["weather_date", "city"]
     )
 }}
 

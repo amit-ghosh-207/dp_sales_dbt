@@ -1,7 +1,6 @@
 {{
     config (
-        materialized = "table", 
-        tags = ["core", "events"]
+        materialized = "table"
     )
 }}
 WITH

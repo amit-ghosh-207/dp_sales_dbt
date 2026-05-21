@@ -5,8 +5,7 @@
         "product_id", 
         "interaction_type", 
         "interaction_ts"
-      ],
-      tags = ["core", "events"]
+      ]
     )
 }}
 
