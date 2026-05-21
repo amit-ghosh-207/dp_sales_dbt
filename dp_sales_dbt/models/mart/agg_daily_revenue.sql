@@ -1,6 +1,6 @@
 {{
     config (
-      materialized = "view"
+      unique_key = ["order_date"]
     )
 }}
 
@@ -12,6 +12,8 @@ select
 from {{ ref('fact_sales') }} as fs
 right join {{ ref('dim_date') }} as dd on fs.order_date = dd.date_key
 
-where {{ get_date_interval('dd.date_key', '2024-01-01', 1)  }}
+{% if is_incremental () %}
+where {{ get_date_interval('dd.date_key')  }}
+{% endif %}
 
 group by dd.date_key

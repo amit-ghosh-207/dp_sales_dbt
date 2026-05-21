@@ -1,7 +1,6 @@
 {{
     config (
-      materialized = "table", 
-      tags = ["core", "events"]
+      materialized = "table"
     )
 }}
 
@@ -21,6 +20,7 @@ from
 
 where 1 = 1
     and '{{ dbt_airflow_macros.ds(timezone=none) }}'::date between dc.valid_from::date and dc.valid_to::date
+    and dc.status <> 'cancelled'
 
 group by
     dc.customer_id,

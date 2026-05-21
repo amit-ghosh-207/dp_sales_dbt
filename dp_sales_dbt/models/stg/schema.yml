@@ -14,7 +14,7 @@ models:
         tests:
           - not_null
       - name: customer_id
-        description: "Customer id"
+        description: "Unique identifier for the customer."
         tests:
           - not_null
       - name: customer_name
@@ -46,7 +46,7 @@ models:
           - accepted_values:
               values: ['active', 'cancelled']
       - name: source_file_name
-        description: "Raw file name"
+        description: "The name of the source file from which the data was ingested."
       - name: load_ts
         description: "Load timestamp"
   - name: stg_product
@@ -62,15 +62,17 @@ models:
         tests:
           - not_null
       - name: product_id
-        description: "Product ID"
+        description: "Primary identifier for the product."
+        tests:
+          - not_null
       - name: product_name
         description: "Descriptive name of the product"
       - name: product_category_id
-        description: "Product category id"
+        description: "Reference to the product category table."
       - name: source_file_name
-        description: "Raw file name"
+        description: "The name of the source file from which the data was ingested."
       - name: load_ts
-        description: "Load timestamp"
+        description: "The timestamp indicating when the data was loaded into the staging layer."
   - name: stg_product_category
     description: "Detailed staging model for product categories and inventory details"
     tests:
@@ -85,8 +87,12 @@ models:
           - not_null
       - name: product_id
         description: "Product identifier"
+        tests:
+          - not_null
       - name: category_id
         description: "Category identifier"
+        tests:
+          - not_null
       - name: category_name
         description: "Primary category name"
       - name: subcategory
@@ -118,9 +124,9 @@ models:
       - name: source_last_updated_date
         description: "Timestamp of last update in the source system"
       - name: source_file_name
-        description: "Raw file name"
+        description: "The name of the source file from which the data was ingested."
       - name: load_ts
-        description: "Load timestamp"
+        description: "The timestamp indicating when the data was loaded into the staging layer."
   - name: stg_sales
     description: "Staging model for transactional sales data"
     tests:
@@ -164,17 +170,17 @@ models:
           - accepted_values:
               values: ['paypal', 'credit_card', 'debit_card', 'bank_transfer']
       - name: discount_applied
-        description: "Discount applied"
+        description: "The amount or percentage of discount applied to the sale."
       - name: shipping_cost
-        description: "Shipping cost"
+        description: "The cost associated with shipping the order."
       - name: created_at
-        description: "Created at"
+        description: "The timestamp when the sales record was created in the source system."
         tests:
           - not_null
       - name: source_file_name
-        description: "Raw file name"
+        description: "The name of the source file from which the data was ingested."
       - name: load_ts
-        description: "Load timestamp"
+        description: "The timestamp indicating when the data was loaded into the staging layer."
   - name: stg_subscription
     description: "Staging model for customer subscription plans"
     tests:
@@ -188,11 +194,11 @@ models:
         tests:
           - not_null
       - name: customer_id
-        description: "Customer ID"
+        description: "Reference to the customer holding the subscription."
         tests:
           - not_null
       - name: subscription_id
-        description: "Subscription ID"
+        description: "Unique identifier for the subscription."
         tests:
           - not_null
       - name: plan_type
@@ -220,9 +226,9 @@ models:
           - accepted_values:
               values: ['Active', 'Cancelled']
       - name: source_file_name
-        description: "Raw file name"
+        description: "The name of the source file from which the data was ingested."
       - name: load_ts
-        description: "Load timestamp"
+        description: "The timestamp indicating when the data was loaded into the staging layer."
   - name: stg_weather
     description: "Staging model for external weather data"
     tests:
@@ -252,9 +258,9 @@ models:
         tests:
           - not_null
       - name: source_file_name
-        description: "Raw file name"
+        description: "The name of the source file from which the data was ingested."
       - name: load_ts
-        description: "Load timestamp"
+        description: "The timestamp indicating when the data was loaded into the staging layer."
   - name: stg_customer_interaction
     description: "Staging model for customer behavioral events"
     tests:
@@ -286,6 +292,6 @@ models:
         tests:
           - not_null
       - name: source_file_name
-        description: "Raw file name"
+        description: "The name of the source file from which the data was ingested."
       - name: load_ts
-        description: "Load timestamp"
+        description: "The timestamp indicating when the data was loaded into the staging layer."

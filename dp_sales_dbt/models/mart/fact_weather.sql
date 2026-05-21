@@ -1,5 +1,3 @@
-
-
 {{
     config (
       unique_key = ["weather_date", "city"]
