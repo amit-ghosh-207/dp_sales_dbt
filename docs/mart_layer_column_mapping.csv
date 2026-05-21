@@ -1,5 +1,5 @@
 model_name,target_column,source_table,source_column,transformation_logic
-dim_date,date_key,N/A,N/A,Generated via recursive CTE (e.g., generate_series)
+dim_date,date_key,N/A,N/A,Generated via recursive CTE
 dim_customer,customer_id,stg_customer,customer_id,Direct pass-through
 dim_customer,customer_name,stg_customer,customer_name,Direct pass-through
 dim_customer,valid_from,stg_customer,valid_from,Direct pass-through
