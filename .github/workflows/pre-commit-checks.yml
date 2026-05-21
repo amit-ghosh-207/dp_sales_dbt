@@ -34,6 +34,7 @@ jobs:
 
       - name: Install dbt dependencies
         shell: bash -l {0}
+        working-directory: dp_sales_dbt
         run: |
           dbt deps
 
@@ -50,13 +51,13 @@ jobs:
         id: get_files_to_lint
         shell: bash -l {0}
         run: |
-          # Combine modified and added files, then filter for .sql files in models/
+          # Combine modified and added files, then filter for .sql files in the project's models folder
           FILES_MODIFIED="${{ steps.get_file_changes.outputs.files_modified }}"
           FILES_ADDED="${{ steps.get_file_changes.outputs.files_added }}"
           
           ALL_CHANGED_FILES="$FILES_MODIFIED $FILES_ADDED"
           
-          FILES_TO_LINT=$(echo "$ALL_CHANGED_FILES" | tr -s ' ' '\n' | grep -E '^models/.*\.sql$' | tr -s '\n' ' ')
+          FILES_TO_LINT=$(echo "$ALL_CHANGED_FILES" | tr -s ' ' '\n' | grep -E '^dp_sales_dbt/models/.*\.sql$' | tr -s '\n' ' ')
           
           # Modern way to set output in GitHub Actions
           echo "files=$FILES_TO_LINT" >> $GITHUB_OUTPUT
