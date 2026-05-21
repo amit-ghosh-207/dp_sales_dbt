@@ -53,5 +53,5 @@ where
       max(load_ts)
     from
       {{this}}
-  ) 
+  )
 {% endif %}

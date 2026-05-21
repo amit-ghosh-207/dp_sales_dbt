@@ -21,7 +21,7 @@ models:
         description: "Full name of the customer"
         config:
           meta:
-            contains_pii: true 
+            contains_pii: true
       - name: customer_email
         description: "Customer email address used for communication"
         tests:
@@ -30,7 +30,7 @@ models:
               regex: "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
         config:
           meta:
-            contains_pii: true 
+            contains_pii: true
       - name: start_date
         description: "Effective start date for the customer record"
         tests:

@@ -46,7 +46,7 @@ snapshots:
       dbt_valid_to_current: "CAST('9999-12-31' AS DATE)"
   - name: fact_customer_subscription
     relation: ref('stg_subscription')
-    config: 
+    config:
       schema: DW_SALES_MART
       unique_key: [customer_id, subscription_id]
       strategy: check

@@ -1,5 +1,5 @@
 
-{%- macro get_date_interval(business_date_column, start_date=none, interval_days=none) -%} 
+{%- macro get_date_interval(business_date_column, start_date=none, interval_days=none) -%}
 
 
     {%- if start_date is none -%}
@@ -20,6 +20,6 @@
         {%- endif -%}
     {%- endif -%}
 
-    {{ business_date_column }} BETWEEN '{{ start_date }}'::DATE - INTERVAL {{ interval_days }} DAY AND '{{ start_date }}'::DATE  
+    {{ business_date_column }} BETWEEN '{{ start_date }}'::DATE - INTERVAL {{ interval_days }} DAY AND '{{ start_date }}'::DATE
 
 {%- endmacro -%}

@@ -9,7 +9,7 @@ with
       customer_hash_diff,
       customer_id,
       customer_name,
-      customer_email, 
+      customer_email,
       cast(start_date as date) as start_date,
       cast(end_date as date) as end_date,
       status,
@@ -22,7 +22,7 @@ select
   customer_hash_diff,
   customer_id,
   customer_name,
-  customer_email, 
+  customer_email,
   start_date,
   end_date,
   status,
@@ -37,5 +37,5 @@ where
       max(load_ts)
     from
       {{this}}
-  ) 
+  )
 {% endif %}

@@ -4,7 +4,7 @@
 {{ config(tags=['unit-test']) }}
 
 {% call dbt_unit_testing.test('agg_daily_revenue', 'test_daily_revenue_aggregation_and_missing_dates') %}
-  
+
   {% call dbt_unit_testing.mock_ref('fact_sales') %}
     select '2024-01-01'::DATE as order_date, 1001 as order_id, 10 as customer_id, 50.0 as order_amount
     union all

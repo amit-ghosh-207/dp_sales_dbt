@@ -71,7 +71,7 @@ with cte_agg_revenue as
             dd.month_key,
             dp.product_category_id
     )
-select 
+select
     month_key,
     product_category_id,
     total_revenue,

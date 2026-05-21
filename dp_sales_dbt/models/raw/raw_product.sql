@@ -31,5 +31,5 @@ where
       filename
     from
       {{this}}
-  ) 
+  )
 {% endif %}

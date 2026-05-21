@@ -4,7 +4,7 @@ models:
   - name: raw_customer
     description: "Raw landing table for customer profile information, including sensitive PII details."
     config:
-      freshness: 
+      freshness:
         warn_after:
           count: 20
           period: hour
@@ -29,17 +29,17 @@ models:
         description: "Unique identifier for the customer from the source system."
         config:
           meta:
-            contains_pii: true 
+            contains_pii: true
       - name: customer_name
         description: "Full name of the customer."
         config:
           meta:
-            contains_pii: true 
+            contains_pii: true
       - name: customer_email
         description: "Customer's email address."
         config:
           meta:
-            contains_pii: true 
+            contains_pii: true
       - name: filename
         description: "Name of the source file processed for this record."
       - name: load_ts
@@ -47,7 +47,7 @@ models:
   - name: raw_product
     description: "Raw staging table for product catalog data."
     config:
-      freshness: 
+      freshness:
         warn_after:
           count: 20
           period: hour
@@ -74,7 +74,7 @@ models:
   - name: raw_product_category
     description: "Raw staging table for product category definitions."
     config:
-      freshness: 
+      freshness:
         warn_after:
           count: 20
           period: hour
@@ -95,7 +95,7 @@ models:
   - name: raw_sales
     description: "Raw landing table for transactional sales records."
     config:
-      freshness: 
+      freshness:
         warn_after:
           count: 20
           period: hour
@@ -116,7 +116,7 @@ models:
   - name: raw_subscription
     description: "Raw staging table for customer subscription status history."
     config:
-      freshness: 
+      freshness:
         warn_after:
           count: 20
           period: hour
@@ -137,7 +137,7 @@ models:
   - name: raw_weather
     description: "Raw staging table for regional weather observations."
     config:
-      freshness: 
+      freshness:
         warn_after:
           count: 20
           period: hour
@@ -158,7 +158,7 @@ models:
   - name: raw_customer_interaction
     description: "Raw staging table for customer touchpoints and event logs."
     config:
-      freshness: 
+      freshness:
         warn_after:
           count: 20
           period: hour

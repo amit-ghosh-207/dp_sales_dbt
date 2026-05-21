@@ -30,12 +30,12 @@ Create a dbt model that calculates total revenue by product category for each mo
 
 ---
 
-## Question 2: 
+## Question 2:
 Extend the previous model to handle edge cases where `order_quantity` is zero and calculate the percentage of sales coming from each payment method. Handle null values appropriately.
 
 ---
 
-## Question 3: 
+## Question 3:
 Create a dbt model that segments customers into tiers based on their total purchase amount:
 - "High Value": Total purchases >= $1000
 - "Medium Value": Total purchases between $500-$999
@@ -45,7 +45,7 @@ Include customer names and calculate the number of orders per customer.
 
 ---
 
-## Question 4: 
+## Question 4:
 Create a model that analyzes payment method preferences by calculating:
 - Total revenue by payment method
 - Average order value by payment method
@@ -54,7 +54,7 @@ Create a model that analyzes payment method preferences by calculating:
 
 ---
 
-## Question 5: 
+## Question 5:
 Create a dbt model that flags orders for review based on business rules:
 - `discount_applied` > 30%
 - `shipping_cost` > 10% of `order_amount`
@@ -71,5 +71,5 @@ Analyze seasonal sales patterns by creating a model that shows:
 
 ---
 
-## Question 7: 
+## Question 7:
 Create a dbt macro that accepts date range parameters and filters sales data accordingly. Use this macro in a model to calculate daily revenue totals. Handle cases where no data exists for the given date range.
