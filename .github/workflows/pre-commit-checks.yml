@@ -18,7 +18,7 @@ jobs:
 
     # Set environment variables used throughout workflow
     env:
-      DBT_PROFILES_DIR: ./dp_sales_dbt
+      DBT_PROFILES_DIR: .
 
     steps:
 
