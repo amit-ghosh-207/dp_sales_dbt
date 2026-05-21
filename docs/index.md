@@ -50,7 +50,7 @@ graph TD
         D_DATE[dim_date]
         D_CUST[dim_customer]
         D_PROD[dim_product]
-        
+
         F_S[fact_sales]
         F_W[fact_weather]
         F_CI[fact_customer_interaction]
@@ -83,7 +83,7 @@ graph TD
     D_CUST --> A_CO
 
     F_S --> A_PMO
-    
+
     F_S --> A_PMMR
     D_DATE --> A_PMMR
     D_PROD --> A_PMMR
@@ -94,4 +94,3 @@ graph TD
     F_S --> A_DR
 ```
 +## Data Mapping & Transformations + +The following table provides a detailed lineage of the transformations applied to the data as it moves from the staging layer into the final mart models. + +{{ read_csv('../docs/mart_layer_column_mapping.csv') }}
-

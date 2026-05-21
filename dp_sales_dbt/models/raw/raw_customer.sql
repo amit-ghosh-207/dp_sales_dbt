@@ -1,38 +1,37 @@
 {{
     config (
-      unique_key = "customer_hash_diff",
-      tags = ["core", "events"]
+      unique_key = "customer_hash_diff"
     )
 }}
-WITH
-  cte_raw_customer AS (
-    SELECT
+with
+  cte_raw_customer as (
+    select
       *,
-      get_current_timestamp() AS load_ts
-    FROM
+      get_current_timestamp() as load_ts
+    from
       {{ source ('external_source', 'customer') }}
   )
-SELECT
-  MD5(
+select
+  md5(
     concat_ws(
       '|',
-      COALESCE(customer_id, 'default_value'),
-      COALESCE(customer_name, 'default_value'),
-      COALESCE(customer_email, 'default_value'),
-      COALESCE(start_date, 'default_value'),
-      COALESCE(end_date, 'default_value'),
-      COALESCE(status, 'default_value')
+      coalesce(customer_id, 'default_value'),
+      coalesce(customer_name, 'default_value'),
+      coalesce(customer_email, 'default_value'),
+      coalesce(start_date, 'default_value'),
+      coalesce(end_date, 'default_value'),
+      coalesce(status, 'default_value')
     )
-  ) AS customer_hash_diff,
+  ) as customer_hash_diff,
   *
-FROM cte_raw_customer
+from cte_raw_customer
 
 {% if is_incremental () %}
-WHERE
-  filename NOT IN (
-    SELECT
+where
+  filename not in (
+    select
       filename
-    FROM
+    from
       {{this}}
-  ) 
+  )
 {% endif %}

@@ -1,12 +1,11 @@
 {{
     config (
-      unique_key = ["customer_interaction_hash_diff", "source_file_name"],
-      tags = ["core", "events"]
+      unique_key = ["customer_interaction_hash_diff", "source_file_name"]
     )
 }}
-WITH
-  cte_raw_customer_interaction AS (
-    SELECT
+with
+  cte_raw_customer_interaction as (
+    select
       customer_interaction_hash_diff,
       customer_id,
       product_id,
@@ -14,25 +13,25 @@ WITH
       strptime("timestamp", '%Y-%m-%d %H:%M:%S') as interaction_ts,
       filename,
       load_ts as raw_load_ts
-    FROM
+    from
       {{ ref('raw_customer_interaction') }}
   )
-SELECT
+select
   customer_interaction_hash_diff,
   customer_id,
   product_id,
   interaction_type,
   interaction_ts,
   filename as source_file_name,
-  get_current_timestamp() AS load_ts
-FROM cte_raw_customer_interaction
+  get_current_timestamp() as load_ts
+from cte_raw_customer_interaction
 
 {% if is_incremental () %}
-WHERE
+where
   raw_load_ts > (
-    SELECT
+    select
       max(load_ts)
-    FROM
+    from
       {{this}}
-  ) 
+  )
 {% endif %}

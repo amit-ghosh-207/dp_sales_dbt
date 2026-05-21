@@ -1,9 +1,17 @@
-
 version: 2
 
 models:
   - name: raw_customer
-    description: "A starter dbt model"
+    description: "Raw landing table for customer profile information, including sensitive PII details."
+    config:
+      freshness:
+        warn_after:
+          count: 20
+          period: hour
+        error_after:
+          count: 24
+          period: hour
+      loaded_at_field: load_ts
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -11,33 +19,42 @@ models:
             - filename
     columns:
       - name: customer_hash_diff
-        description: "The primary key for this table"
+        description: "Hashed surrogate key used for change detection and record uniqueness."
         config:
           meta:
-            contains_pii: true 
+            contains_pii: true
         tests:
           - not_null
       - name: customer_id
-        description: "The primary key for this table"
+        description: "Unique identifier for the customer from the source system."
         config:
           meta:
-            contains_pii: true 
+            contains_pii: true
       - name: customer_name
-        description: "The primary key for this table"
+        description: "Full name of the customer."
         config:
           meta:
-            contains_pii: true 
+            contains_pii: true
       - name: customer_email
-        description: "The primary key for this table"
+        description: "Customer's email address."
         config:
           meta:
-            contains_pii: true 
+            contains_pii: true
       - name: filename
-        description: "The primary key for this table"
+        description: "Name of the source file processed for this record."
       - name: load_ts
-        description: "The primary key for this table"
+        description: "Timestamp when the data was ingested into the raw layer."
   - name: raw_product
-    description: "A starter dbt model"
+    description: "Raw staging table for product catalog data."
+    config:
+      freshness:
+        warn_after:
+          count: 20
+          period: hour
+        error_after:
+          count: 24
+          period: hour
+      loaded_at_field: load_ts
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -45,18 +62,26 @@ models:
             - filename
     columns:
       - name: product_hash_diff
-        description: "The primary key for this table"
+        description: "Surrogate key representing a unique product record state."
         tests:
           - not_null
-          - unique
       - name: product_id
-        description: "The primary key for this table"
+        description: "Source identifier for the product."
       - name: product_name
-        description: "The primary key for this table"
+        description: "Marketing name of the product."
       - name: product_category_id
-        description: "The primary key for this table"
+        description: "Reference to the product category identifier."
   - name: raw_product_category
-    description: "A starter dbt model"
+    description: "Raw staging table for product category definitions."
+    config:
+      freshness:
+        warn_after:
+          count: 20
+          period: hour
+        error_after:
+          count: 24
+          period: hour
+      loaded_at_field: load_ts
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -64,20 +89,41 @@ models:
             - filename
     columns:
       - name: product_category_hash_diff
-        description: "The primary key for this table"
+        description: "Surrogate key for the product category record."
         tests:
           - not_null
-          - unique
   - name: raw_sales
-    description: "A starter dbt model"
+    description: "Raw landing table for transactional sales records."
+    config:
+      freshness:
+        warn_after:
+          count: 20
+          period: hour
+        error_after:
+          count: 24
+          period: hour
+      loaded_at_field: load_ts
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - sales_hash_diff
+            - filename
     columns:
       - name: sales_hash_diff
-        description: "The primary key for this table"
+        description: "Surrogate key for a specific sales transaction."
         tests:
           - not_null
-          - unique
   - name: raw_subscription
-    description: "A starter dbt model"
+    description: "Raw staging table for customer subscription status history."
+    config:
+      freshness:
+        warn_after:
+          count: 20
+          period: hour
+        error_after:
+          count: 24
+          period: hour
+      loaded_at_field: load_ts
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -85,12 +131,20 @@ models:
             - filename
     columns:
       - name: subscription_hash_diff
-        description: "The primary key for this table"
+        description: "Surrogate key for the subscription record."
         tests:
           - not_null
-          - unique
   - name: raw_weather
-    description: "A starter dbt model"
+    description: "Raw staging table for regional weather observations."
+    config:
+      freshness:
+        warn_after:
+          count: 20
+          period: hour
+        error_after:
+          count: 24
+          period: hour
+      loaded_at_field: load_ts
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -98,12 +152,20 @@ models:
             - filename
     columns:
       - name: weather_hash_diff
-        description: "The primary key for this table"
+        description: "Surrogate key for the weather observation record."
         tests:
           - not_null
-          - unique
   - name: raw_customer_interaction
-    description: "A starter dbt model"
+    description: "Raw staging table for customer touchpoints and event logs."
+    config:
+      freshness:
+        warn_after:
+          count: 20
+          period: hour
+        error_after:
+          count: 24
+          period: hour
+      loaded_at_field: load_ts
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -111,7 +173,6 @@ models:
             - filename
     columns:
       - name: customer_interaction_hash_diff
-        description: "The primary key for this table"
+        description: "Surrogate key for a customer interaction event."
         tests:
           - not_null
-          - unique

@@ -5,7 +5,7 @@
 {{ config(tags=['unit-test']) }}
 
 {% call dbt_unit_testing.test('agg_payment_method_monthly_revenue', 'test_payment_method_split_and_percentages') %}
-  
+
   {% call dbt_unit_testing.mock_ref('fact_sales') %}
     select '2024-01-01'::DATE as order_date, 1 as product_id, 100.0 as order_amount, 'credit_card' as payment_method
     union all
@@ -23,9 +23,9 @@
   {% endcall %}
 
   {% call dbt_unit_testing.expect() %}
-    select 
-        '202401' as month_key, 
-        'CAT_A' as product_category_id, 
+    select
+        '202401' as month_key,
+        'CAT_A' as product_category_id,
         400.0 as total_revenue,
         100.0 as total_revenue_credit_card,
         300.0 as total_revenue_paypal,

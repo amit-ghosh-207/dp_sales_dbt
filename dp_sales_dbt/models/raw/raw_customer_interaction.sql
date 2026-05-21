@@ -1,38 +1,37 @@
 {{
     config (
-      unique_key = "customer_interaction_hash_diff",
-      tags = ["core", "events"]
+      unique_key = "customer_interaction_hash_diff"
     )
 }}
-WITH
-  cte_raw_customer_interaction AS (
-    SELECT
+with
+  cte_raw_customer_interaction as (
+    select
       *,
-      get_current_timestamp() AS load_ts
-    FROM
+      get_current_timestamp() as load_ts
+    from
       {{ source ('external_source', 'customer_interaction') }}
   )
-SELECT
-  MD5(
+select
+  md5(
     concat_ws(
       '|',
-      COALESCE(customer_id, 'default_value'),
-      COALESCE(product_id, 'default_value'),
-      COALESCE(interaction_type, 'default_value'),
-      COALESCE("timestamp", 'default_value'),
+      coalesce(customer_id, 'default_value'),
+      coalesce(product_id, 'default_value'),
+      coalesce(interaction_type, 'default_value'),
+      coalesce("timestamp", 'default_value'),
       filename,
       load_ts
     )
-  ) AS customer_interaction_hash_diff,
+  ) as customer_interaction_hash_diff,
   *
-FROM cte_raw_customer_interaction
+from cte_raw_customer_interaction
 
 {% if is_incremental () %}
-WHERE
-  filename NOT IN (
-    SELECT
+where
+  filename not in (
+    select
       filename
-    FROM
+    from
       {{this}}
-  ) 
+  )
 {% endif %}

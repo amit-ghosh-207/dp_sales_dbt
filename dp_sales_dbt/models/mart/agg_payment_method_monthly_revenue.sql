@@ -1,78 +1,77 @@
 {{
     config (
-      unique_key = ["month_key", "product_category_id"],
-      tags = ["core", "events"]
+      unique_key = ["month_key", "product_category_id"]
     )
 }}
 
-WITH cte_agg_revenue as
+with cte_agg_revenue as
     (
-        SELECT
+        select
             dd.month_key,
             dp.product_category_id,
-            sum(fs.order_amount) AS total_revenue,
-            stddev_pop(fs.order_amount)/avg(fs.order_amount) AS monthly_order_volatility,
+            sum(fs.order_amount) as total_revenue,
+            stddev_pop(fs.order_amount)/avg(fs.order_amount) as monthly_order_volatility,
             coalesce(
                 sum(
-                    CASE
-                        WHEN lower(fs.payment_method) = 'credit_card' THEN fs.order_amount
-                    END
+                    case
+                        when lower(fs.payment_method) = 'credit_card' then fs.order_amount
+                    end
                 ),
                 0
-            ) AS total_revenue_credit_card,
+            ) as total_revenue_credit_card,
             coalesce(
                 sum(
-                    CASE
-                        WHEN lower(fs.payment_method) = 'bank_transfer' THEN fs.order_amount
-                    END
+                    case
+                        when lower(fs.payment_method) = 'bank_transfer' then fs.order_amount
+                    end
                 ),
                 0
-            ) AS total_revenue_bank_transfer,
+            ) as total_revenue_bank_transfer,
             coalesce(
                 sum(
-                    CASE
-                        WHEN lower(fs.payment_method) = 'paypal' THEN fs.order_amount
-                    END
+                    case
+                        when lower(fs.payment_method) = 'paypal' then fs.order_amount
+                    end
                 ),
                 0
-            ) AS total_revenue_paypal,
+            ) as total_revenue_paypal,
             coalesce(
                 sum(
-                    CASE
-                        WHEN lower(fs.payment_method) = 'debit_card' THEN fs.order_amount
-                    END
+                    case
+                        when lower(fs.payment_method) = 'debit_card' then fs.order_amount
+                    end
                 ),
                 0
-            ) AS total_revenue_debit_card,
+            ) as total_revenue_debit_card,
             round(if (
                 total_revenue = 0,
                 0,
                 total_revenue_credit_card * 100 / total_revenue
-            ), 2) AS total_revenue_credit_card_pct,
+            ), 2) as total_revenue_credit_card_pct,
             round(if (
                 total_revenue = 0,
                 0,
                 total_revenue_bank_transfer * 100 / total_revenue
-            ), 2) AS total_revenue_bank_transfer_pct,
+            ), 2) as total_revenue_bank_transfer_pct,
             round(if (
                 total_revenue = 0,
                 0,
                 total_revenue_paypal * 100 / total_revenue
-            ), 2) AS total_revenue_paypal_pct,
+            ), 2) as total_revenue_paypal_pct,
             round(if (
                 total_revenue = 0,
                 0,
                 total_revenue_debit_card * 100 / total_revenue
-            ), 2) AS total_revenue_debit_card_pct,
-        FROM
-            {{ ref('fact_sales') }} AS fs
-            INNER JOIN {{ ref('dim_date') }} AS dd ON fs.order_date = dd.date_key
-            INNER JOIN {{ ref('dim_product') }} AS dp ON fs.product_id = dp.product_id
-        GROUP BY
+            ), 2) as total_revenue_debit_card_pct,
+        from
+            {{ ref('fact_sales') }} as fs
+            inner join {{ ref('dim_date') }} as dd on fs.order_date = dd.date_key
+            inner join {{ ref('dim_product') }} as dp on fs.product_id = dp.product_id
+        group by
             dd.month_key,
             dp.product_category_id
     )
-select 
+select
     month_key,
     product_category_id,
     total_revenue,
@@ -85,13 +84,13 @@ select
     total_revenue_bank_transfer_pct,
     total_revenue_paypal_pct,
     total_revenue_debit_card_pct,
-    get_current_timestamp() AS load_ts
+    get_current_timestamp() as load_ts
 from cte_agg_revenue
 
 {% if is_incremental () %}
-WHERE
+where
   month_key in (
     select month_key from {{ ref('dim_date') }}
-    where date_key = '{{ dbt_airflow_macros.ds(timezone=none) }}'::DATE
+    where date_key = '{{ dbt_airflow_macros.ds(timezone=none) }}'::date
   )
 {% endif %}

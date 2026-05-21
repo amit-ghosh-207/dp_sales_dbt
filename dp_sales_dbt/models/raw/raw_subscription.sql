@@ -1,38 +1,37 @@
 {{
     config (
-      unique_key = "subscription_hash_diff",
-      tags = ["core", "events"]
+      unique_key = "subscription_hash_diff"
     )
 }}
-WITH
-  cte_raw_subscription AS (
-    SELECT
+with
+  cte_raw_subscription as (
+    select
       *,
-      get_current_timestamp() AS load_ts
-    FROM
+      get_current_timestamp() as load_ts
+    from
       {{ source ('external_source', 'subscription') }}
   )
-SELECT
-  MD5(
+select
+  md5(
     concat_ws(
       '|',
-      COALESCE(customer_id, 'default_value'),
-      COALESCE(subscription_id, 'default_value'),
-      COALESCE(plan_type, 'default_value'),
-      COALESCE(subscription_start_date, 'default_value'),
-      COALESCE(subscription_end_date, 'default_value'),
-      COALESCE(monthly_fee, 'default_value')
+      coalesce(customer_id, 'default_value'),
+      coalesce(subscription_id, 'default_value'),
+      coalesce(plan_type, 'default_value'),
+      coalesce(subscription_start_date, 'default_value'),
+      coalesce(subscription_end_date, 'default_value'),
+      coalesce(monthly_fee, 'default_value')
     )
-  ) AS subscription_hash_diff,
+  ) as subscription_hash_diff,
   *
-FROM cte_raw_subscription
+from cte_raw_subscription
 
 {% if is_incremental () %}
-WHERE
-  filename NOT IN (
-    SELECT
+where
+  filename not in (
+    select
       filename
-    FROM
+    from
       {{this}}
-  ) 
+  )
 {% endif %}

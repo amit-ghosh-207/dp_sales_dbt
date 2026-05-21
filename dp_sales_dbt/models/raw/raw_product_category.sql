@@ -1,46 +1,45 @@
 {{
     config (
-      unique_key = "product_category_hash_diff",
-      tags = ["core", "events"]
+      unique_key = "product_category_hash_diff"
     )
 }}
-WITH
-  cte_raw_product_category AS (
-    SELECT
+with
+  cte_raw_product_category as (
+    select
       *,
-      get_current_timestamp() AS load_ts
-    FROM
+      get_current_timestamp() as load_ts
+    from
       {{ source ('external_source', 'product_category') }}
   )
-SELECT
-  MD5(
+select
+  md5(
     concat_ws(
       '|',
-      COALESCE(product_id, 'default_value'),
-      COALESCE(category_id, 'default_value'),
-      COALESCE(category_name, 'default_value'),
-      COALESCE(subcategory, 'default_value'),
-      COALESCE(brand, 'default_value'),
-      COALESCE(supplier_id, 'default_value'),
-      COALESCE(cost_price, 'default_value'),
-      COALESCE(retail_price, 'default_value'),
-      COALESCE(margin_percent, 'default_value'),
-      COALESCE(stock_level, 'default_value'),
-      COALESCE(reorder_point, 'default_value'),
-      COALESCE(discontinued, 'default_value'),
-      COALESCE(launch_date, 'default_value'),
-      COALESCE(last_updated, 'default_value')
+      coalesce(product_id, 'default_value'),
+      coalesce(category_id, 'default_value'),
+      coalesce(category_name, 'default_value'),
+      coalesce(subcategory, 'default_value'),
+      coalesce(brand, 'default_value'),
+      coalesce(supplier_id, 'default_value'),
+      coalesce(cost_price, 'default_value'),
+      coalesce(retail_price, 'default_value'),
+      coalesce(margin_percent, 'default_value'),
+      coalesce(stock_level, 'default_value'),
+      coalesce(reorder_point, 'default_value'),
+      coalesce(discontinued, 'default_value'),
+      coalesce(launch_date, 'default_value'),
+      coalesce(last_updated, 'default_value')
     )
-  ) AS product_category_hash_diff,
+  ) as product_category_hash_diff,
   *
-FROM cte_raw_product_category
+from cte_raw_product_category
 
 {% if is_incremental () %}
-WHERE
-  filename NOT IN (
-    SELECT
+where
+  filename not in (
+    select
       filename
-    FROM
+    from
       {{this}}
-  ) 
+  )
 {% endif %}

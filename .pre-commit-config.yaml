@@ -16,3 +16,10 @@ repos:
         args: ["--project-dir", "dp_sales_dbt"]
       - id: check-model-has-description
         args: ["--project-dir", "dp_sales_dbt"]
+
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 2.3.5
+    hooks:
+      - id: sqlfluff-lint
+        args: ["--dialect", "duckdb", "--config", "dp_sales_dbt/.sqlfluff"]
+        additional_dependencies: ['sqlfluff-templater-dbt', 'dbt-duckdb']
