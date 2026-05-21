@@ -3,23 +3,23 @@
       unique_key = ["subscription_hash_diff", "source_file_name"]
     )
 }}
-WITH
-  cte_raw_subscription AS (
-    SELECT
+with
+  cte_raw_subscription as (
+    select
       subscription_hash_diff,
       customer_id,
       subscription_id,
       plan_type,
-      CAST(subscription_start_date AS DATE) as subscription_start_date,
-      CAST(subscription_end_date AS DATE) as subscription_end_date,
-      monthly_fee::DECIMAL(15, 2) as monthly_fee,
+      cast(subscription_start_date as date) as subscription_start_date,
+      cast(subscription_end_date as date) as subscription_end_date,
+      monthly_fee::decimal(15, 2) as monthly_fee,
       status,
       filename,
       load_ts as raw_load_ts
-    FROM
+    from
       {{ ref('raw_subscription') }}
   )
-SELECT
+select
   subscription_hash_diff,
   customer_id,
   subscription_id,
@@ -29,15 +29,15 @@ SELECT
   monthly_fee,
   status,
   filename as source_file_name,
-  get_current_timestamp() AS load_ts
-FROM cte_raw_subscription
+  get_current_timestamp() as load_ts
+from cte_raw_subscription
 
 {% if is_incremental () %}
-WHERE
+where
   raw_load_ts > (
-    SELECT
+    select
       max(load_ts)
-    FROM
+    from
       {{this}}
   ) 
 {% endif %}

@@ -3,33 +3,33 @@
       unique_key = ["product_hash_diff", "source_file_name"]
     )
 }}
-WITH
-  cte_raw_product AS (
-    SELECT
+with
+  cte_raw_product as (
+    select
       product_hash_diff,
       product_id,
       product_name,
       product_category_id,
       filename,
       load_ts as raw_load_ts
-    FROM
+    from
       {{ ref('raw_product') }}
   )
-SELECT
+select
   product_hash_diff,
   product_id,
   product_name,
   product_category_id,
   filename as source_file_name,
-  get_current_timestamp() AS load_ts
-FROM cte_raw_product
+  get_current_timestamp() as load_ts
+from cte_raw_product
 
 {% if is_incremental () %}
-WHERE
+where
   raw_load_ts > (
-    SELECT
+    select
       max(load_ts)
-    FROM
+    from
       {{this}}
   ) 
 {% endif %}

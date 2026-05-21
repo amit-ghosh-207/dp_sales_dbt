@@ -3,22 +3,22 @@
       unique_key = ["customer_hash_diff", "source_file_name"]
     )
 }}
-WITH
-  cte_raw_customer AS (
-    SELECT
+with
+  cte_raw_customer as (
+    select
       customer_hash_diff,
       customer_id,
       customer_name,
       customer_email, 
-      CAST(start_date AS DATE) as start_date,
-      CAST(end_date AS DATE) as end_date,
+      cast(start_date as date) as start_date,
+      cast(end_date as date) as end_date,
       status,
       filename,
       load_ts as raw_load_ts
-    FROM
+    from
       {{ ref('raw_customer') }}
   )
-SELECT
+select
   customer_hash_diff,
   customer_id,
   customer_name,
@@ -27,15 +27,15 @@ SELECT
   end_date,
   status,
   filename as source_file_name,
-  get_current_timestamp() AS load_ts
-FROM cte_raw_customer
+  get_current_timestamp() as load_ts
+from cte_raw_customer
 
 {% if is_incremental () %}
-WHERE
+where
   raw_load_ts > (
-    SELECT
+    select
       max(load_ts)
-    FROM
+    from
       {{this}}
   ) 
 {% endif %}

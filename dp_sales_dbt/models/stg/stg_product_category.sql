@@ -3,9 +3,9 @@
       unique_key = ["product_category_hash_diff", "source_file_name"]
     )
 }}
-WITH
-  cte_raw_product_category AS (
-    SELECT
+with
+  cte_raw_product_category as (
+    select
       product_category_hash_diff,
       product_id,
       category_id,
@@ -13,20 +13,20 @@ WITH
       subcategory,
       brand,
       supplier_id,
-      cost_price::DECIMAL(15, 2) as cost_price,
-      retail_price::DECIMAL(15, 2) as retail_price,
-      margin_percent::DECIMAL(15, 2) as margin_percent,
-      stock_level::INTEGER as stock_level,
-      reorder_point::INTEGER as reorder_point,
-      discontinued::BOOLEAN as discontinued,
-      CAST(launch_date AS DATE) as launch_date,
-      CAST(last_updated AS DATE) as source_last_updated_date,
+      cost_price::decimal(15, 2) as cost_price,
+      retail_price::decimal(15, 2) as retail_price,
+      margin_percent::decimal(15, 2) as margin_percent,
+      stock_level::integer as stock_level,
+      reorder_point::integer as reorder_point,
+      discontinued::boolean as discontinued,
+      cast(launch_date as date) as launch_date,
+      cast(last_updated as date) as source_last_updated_date,
       filename,
       load_ts as raw_load_ts
-    FROM
+    from
       {{ ref('raw_product_category') }}
   )
-SELECT
+select
   product_category_hash_diff,
   product_id,
   category_id,
@@ -43,15 +43,15 @@ SELECT
   launch_date,
   source_last_updated_date,
   filename as source_file_name,
-  get_current_timestamp() AS load_ts
-FROM cte_raw_product_category
+  get_current_timestamp() as load_ts
+from cte_raw_product_category
 
 {% if is_incremental () %}
-WHERE
+where
   raw_load_ts > (
-    SELECT
+    select
       max(load_ts)
-    FROM
+    from
       {{this}}
   ) 
 {% endif %}

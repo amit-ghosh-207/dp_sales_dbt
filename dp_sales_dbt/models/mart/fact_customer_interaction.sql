@@ -9,17 +9,17 @@
     )
 }}
 
-SELECT
+select
   customer_id,
   product_id,
   interaction_type,
   interaction_ts,
-  get_current_timestamp() AS load_ts
-FROM {{ ref('stg_customer_interaction') }}
+  get_current_timestamp() as load_ts
+from {{ ref('stg_customer_interaction') }}
 
 {% if is_incremental () %}
-WHERE 1 = 1
-and interaction_ts::DATE between 
-'{{ dbt_airflow_macros.ds(timezone=none) }}'::DATE  - INTERVAL 3 DAY  
-and '{{ dbt_airflow_macros.ds(timezone=none) }}'::DATE
+where 1 = 1
+and interaction_ts::date between 
+'{{ dbt_airflow_macros.ds(timezone=none) }}'::date  - interval 3 day  
+and '{{ dbt_airflow_macros.ds(timezone=none) }}'::date
 {% endif %}

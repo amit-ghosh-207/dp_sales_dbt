@@ -4,29 +4,29 @@
     )
 }}
 
-WITH
-    cte_agg_order AS (
-        SELECT
+with
+    cte_agg_order as (
+        select
             fs.order_id,
             fs.payment_method,
-            sum(fs.order_amount) AS total_order_amount
-        FROM
-            {{ref ('fact_sales')}} AS fs
-        GROUP BY
+            sum(fs.order_amount) as total_order_amount
+        from
+            {{ref ('fact_sales')}} as fs
+        group by
             fs.order_id,
             fs.payment_method
     )
-SELECT
+select
     payment_method,
     count(order_id) as order_count,
-    round(avg(total_order_amount), 2) AS avg_order_amount,
-    sum(total_order_amount) AS total_payment_method_order_amount,
-    ROUND(
+    round(avg(total_order_amount), 2) as avg_order_amount,
+    sum(total_order_amount) as total_payment_method_order_amount,
+    round(
         (
-            total_payment_method_order_amount * 100.0 / SUM(total_payment_method_order_amount) OVER ()
+            total_payment_method_order_amount * 100.0 / sum(total_payment_method_order_amount) over ()
         ),
-    2) AS percentage_share
-FROM
+    2) as percentage_share
+from
     cte_agg_order
-GROUP BY
+group by
     payment_method

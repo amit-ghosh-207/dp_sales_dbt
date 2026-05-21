@@ -3,39 +3,39 @@
       unique_key = "sales_hash_diff"
     )
 }}
-WITH
-  cte_raw_sales AS (
-    SELECT
+with
+  cte_raw_sales as (
+    select
       *,
-      get_current_timestamp() AS load_ts
-    FROM
+      get_current_timestamp() as load_ts
+    from
       {{ source ('external_source', 'sales') }}
   )
-SELECT
-  MD5(
+select
+  md5(
     concat_ws(
       '|',
-      COALESCE(order_id, 'default_value'),
-      COALESCE(product_id, 'default_value'),
-      COALESCE(customer_id, 'default_value'),
-      COALESCE(order_date, 'default_value'),
-      COALESCE(order_amount, 'default_value'),
-      COALESCE(order_quantity, 'default_value'),
-      COALESCE(payment_method, 'default_value'),
-      COALESCE(discount_applied, 'default_value'),
-      COALESCE(shipping_cost, 'default_value'),
-      COALESCE(created_at, 'default_value')
+      coalesce(order_id, 'default_value'),
+      coalesce(product_id, 'default_value'),
+      coalesce(customer_id, 'default_value'),
+      coalesce(order_date, 'default_value'),
+      coalesce(order_amount, 'default_value'),
+      coalesce(order_quantity, 'default_value'),
+      coalesce(payment_method, 'default_value'),
+      coalesce(discount_applied, 'default_value'),
+      coalesce(shipping_cost, 'default_value'),
+      coalesce(created_at, 'default_value')
     )
-  ) AS sales_hash_diff,
+  ) as sales_hash_diff,
   *
-FROM cte_raw_sales
+from cte_raw_sales
 
 {% if is_incremental () %}
-WHERE
-  filename NOT IN (
-    SELECT
+where
+  filename not in (
+    select
       filename
-    FROM
+    from
       {{this}}
   ) 
 {% endif %}

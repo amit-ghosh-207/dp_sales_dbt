@@ -3,33 +3,33 @@
       unique_key = "weather_hash_diff"
     )
 }}
-WITH
-  cte_raw_weather AS (
-    SELECT
+with
+  cte_raw_weather as (
+    select
       *,
-      get_current_timestamp() AS load_ts
-    FROM
+      get_current_timestamp() as load_ts
+    from
       {{ source ('external_source', 'weather') }}
   )
-SELECT
-  MD5(
+select
+  md5(
     concat_ws(
       '|',
-      COALESCE("date", 'default_value'),
-      COALESCE(temperature, 'default_value'),
-      COALESCE(precipitation, 'default_value'),
-      COALESCE(city, 'default_value')
+      coalesce("date", 'default_value'),
+      coalesce(temperature, 'default_value'),
+      coalesce(precipitation, 'default_value'),
+      coalesce(city, 'default_value')
     )
-  ) AS weather_hash_diff,
+  ) as weather_hash_diff,
   *
-FROM cte_raw_weather
+from cte_raw_weather
 
 {% if is_incremental () %}
-WHERE
-  filename NOT IN (
-    SELECT
+where
+  filename not in (
+    select
       filename
-    FROM
+    from
       {{this}}
   ) 
 {% endif %}

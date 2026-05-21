@@ -1,18 +1,20 @@
+
+
 {{
     config (
       unique_key = ["weather_date", "city"]
     )
 }}
 
-SELECT
+select
   weather_date,
   temperature,
   precipitation,
   city,
   get_current_timestamp() AS load_ts
-FROM {{ ref('stg_weather') }}
+from {{ ref('stg_weather') }}
 
 {% if is_incremental () %}
-WHERE
-  weather_date = '{{ dbt_airflow_macros.ds(timezone=none) }}'::DATE
+where
+  weather_date = '{{ dbt_airflow_macros.ds(timezone=none) }}'::date
 {% endif %}
