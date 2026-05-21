@@ -1,0 +1,16 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
+  - repo: https://github.com/dbt-checkpoint/dbt-checkpoint
+    rev: v1.2.0
+    hooks:
+      - id: dbt-parse
+        args: ["--project-dir", "dp_sales_dbt"]
+      - id: dbt-check
+        args: ["--project-dir", "dp_sales_dbt"]
