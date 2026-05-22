@@ -3,7 +3,7 @@
 
 {{ config(tags=['unit-test']) }}
 
-{% call dbt_unit_testing.test('agg_customer_order', 'test_customer_segmentation_logic') %}
+{% call dbt_unit_testing.test('agg_customer_segmentation', 'test_customer_segmentation_logic') %}
 
   {% call dbt_unit_testing.mock_ref('fact_sales') %}
     select 1 as customer_id, 101 as order_id, 300 as order_amount
