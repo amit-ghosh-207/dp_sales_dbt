@@ -1,4 +1,22 @@
-Model Relationship Summary
+# Model Inventory
+
+### Staging Layer
+- **stg_customer**: Profiles and contact information.
+- **stg_product**: Core product attributes.
+- **stg_product_category**: Categorization and stock levels.
+- **stg_sales**: Raw transactional data.
+- **stg_subscription**: Plan types and statuses.
+- **stg_weather**: Temperature and precipitation data.
+- **stg_customer_interaction**: Event-stream data.
+
+### Mart Layer
+**Dimensions:** `dim_date`, `dim_customer`, `dim_product`.  
+**Facts:** `fact_sales`, `fact_customer_interaction`, `fact_weather`, `fact_review_order`.  
+**Aggregates:** `agg_daily_revenue`, `agg_customer_order`, `agg_payment_method_order`, `agg_payment_method_monthly_revenue`, `agg_monthly_sales_metrics`.
+
+---
+
+## Model Relationship Summary
 
 Based on the provided SQL and YAML configurations, here is how the core mart models interact:
 
@@ -21,76 +39,177 @@ External Factors:
 
 fact_weather and fact_customer_interaction are currently leaf models in the mart layer, processed from staging but not yet joined into the primary sales aggregates in the provided files.
 
+## Data Flow Diagram
+
+The following diagram illustrates the lineage of data from the staging layer through to the dimensions, facts, and summary aggregates in the mart layer.
+
 ```mermaid
-graph TD
-    %% Raw Layer
-    subgraph Raw_Layer [Raw Layer]
-        R_C[raw_customer]
-        R_P[raw_product]
-        R_PC[raw_product_category]
-        R_S[raw_sales]
-        R_SUB[raw_subscription]
-        R_W[raw_weather]
-        R_CI[raw_customer_interaction]
+graph LR
+    subgraph Staging
+        stg_sales[stg_sales]
+        stg_customer[stg_customer]
+        stg_product[stg_product]
+        stg_weather[stg_weather]
+        stg_interaction[stg_customer_interaction]
     end
 
-    %% Staging Layer
-    subgraph Staging_Layer [Staging Layer]
-        S_C[stg_customer]
-        S_P[stg_product]
-        S_PC[stg_product_category]
-        S_S[stg_sales]
-        S_SUB[stg_subscription]
-        S_W[stg_weather]
-        S_CI[stg_customer_interaction]
+    subgraph Mart_Dimensions
+        dim_date[dim_date]
+        dim_customer[dim_customer]
+        dim_product[dim_product]
     end
 
-    %% Mart Layer
-    subgraph Mart_Layer [Mart Layer]
-        D_DATE[dim_date]
-        D_CUST[dim_customer]
-        D_PROD[dim_product]
-
-        F_S[fact_sales]
-        F_W[fact_weather]
-        F_CI[fact_customer_interaction]
-        F_RO[fact_review_order]
-
-        A_CO[agg_customer_order]
-        A_PMO[agg_payment_method_order]
-        A_PMMR[agg_payment_method_monthly_revenue]
-        A_MSM[agg_monthly_sales_metrics]
-        A_DR[agg_daily_revenue]
+    subgraph Mart_Facts
+        fact_sales[fact_sales]
+        fact_weather[fact_weather]
+        fact_interaction[fact_customer_interaction]
+        fact_review[fact_review_order]
     end
 
-    %% Lineage Connections
-    R_C --> S_C
-    R_P --> S_P
-    R_PC --> S_PC
-    R_S --> S_S
-    R_SUB --> S_SUB
-    R_W --> S_W
-    R_CI --> S_CI
+    subgraph Mart_Aggregates
+        agg_daily[agg_daily_revenue]
+        agg_cust_order[agg_customer_order]
+        agg_pay_method[agg_payment_method_order]
+        agg_pay_month[agg_payment_method_monthly_revenue]
+        agg_metrics[agg_monthly_sales_metrics]
+    end
 
-    S_C --> D_CUST
-    S_P --> D_PROD
-    S_S --> F_S
-    S_W --> F_W
-    S_CI --> F_CI
-
-    F_S --> F_RO
-    F_S --> A_CO
-    D_CUST --> A_CO
-
-    F_S --> A_PMO
-
-    F_S --> A_PMMR
-    D_DATE --> A_PMMR
-    D_PROD --> A_PMMR
-
-    A_PMMR --> A_MSM
-    D_DATE --> A_MSM
-
-    F_S --> A_DR
+    stg_sales --> fact_sales
+    stg_customer --> dim_customer
+    stg_product --> dim_product
+    stg_weather --> fact_weather
+    stg_interaction --> fact_interaction
+    fact_sales --> fact_review
+    fact_sales --> agg_daily
+    dim_date --> agg_daily
+    fact_sales --> agg_cust_order
+    dim_customer --> agg_cust_order
+    fact_sales --> agg_pay_method
+    fact_sales --> agg_pay_month
+    dim_product --> agg_pay_month
+    dim_date --> agg_pay_month
+    agg_pay_month --> agg_metrics
 ```
-+## Data Mapping & Transformations + +The following table provides a detailed lineage of the transformations applied to the data as it moves from the staging layer into the final mart models. + +{{ read_csv('../docs/mart_layer_column_mapping.csv') }}
+
+## UML
+
+
+```mermaid
+classDiagram
+    class dim_date {
+        +date_key : DATE (PK)
+        month_key : STRING
+        quarter_key : INT
+        year_key : INT
+        day_of_week : INT
+    }
+
+    class dim_customer {
+        +customer_id : INT (PK)
+        customer_name : STRING
+        valid_from : TIMESTAMP
+        valid_to : TIMESTAMP
+        status : STRING
+    }
+
+    class dim_product {
+        +product_id : INT (PK)
+        product_name : STRING
+        product_category_id : STRING
+    }
+
+    class fact_sales {
+        +order_id : INT (PK)
+        +product_id : INT (FK)
+        +customer_id : INT (FK)
+        +order_date : DATE (FK)
+        order_amount : FLOAT
+        order_quantity : INT
+        payment_method : STRING
+        discount_applied : FLOAT
+        shipping_cost : FLOAT
+    }
+
+    class fact_customer_interaction {
+        +customer_id : INT (FK)
+        +product_id : INT (FK)
+        interaction_type : STRING
+        interaction_ts : TIMESTAMP
+    }
+
+    class fact_weather {
+        +weather_date : DATE (FK)
+        +city : STRING (PK)
+        temperature : FLOAT
+        precipitation : FLOAT
+    }
+
+    class fact_review_order {
+        +order_id : INT (PK)
+        total_order_amount : FLOAT
+        discount_pct : FLOAT
+        shipping_cost_pct : FLOAT
+    }
+
+    class agg_customer_segmentation {
+        +customer_id : INT (FK)
+        total_order_amount : FLOAT
+        total_order_count : INT
+        customer_tier : STRING
+    }
+
+    class agg_daily_revenue {
+        +order_date : DATE (FK)
+        total_order_amount : FLOAT
+        order_count : INT
+        unique_customer_count : INT
+    }
+
+    class agg_monthly_revenue_by_payment_method {
+        +month_key : STRING (FK)
+        +product_category_id : STRING (FK)
+        +payment_method : STRING (PK)
+        total_monthly_order_amount : FLOAT
+        percentage_share : FLOAT
+    }
+
+    class agg_monthly_sales_metrics {
+        +month_key : STRING (FK)
+        +product_category_id : STRING (FK)
+        total_revenue : FLOAT
+        quarterly_total_revenue : FLOAT
+        best_monthly_revenue_ind : BOOLEAN
+    }
+
+    %% Relationships
+    fact_sales --> dim_date : order_date
+    fact_sales --> dim_customer : customer_id
+    fact_sales --> dim_product : product_id
+
+    fact_customer_interaction --> dim_customer : customer_id
+    fact_customer_interaction --> dim_product : product_id
+
+    fact_weather --> dim_date : weather_date
+
+    fact_review_order ..> fact_sales : filters
+
+    agg_customer_segmentation --> dim_customer : customer_id
+    agg_customer_segmentation ..> fact_sales : aggregates
+
+    agg_daily_revenue --> dim_date : order_date
+    agg_daily_revenue ..> fact_sales : aggregates
+
+    agg_monthly_revenue_by_payment_method --> dim_date : month_key
+    agg_monthly_revenue_by_payment_method --> dim_product : product_category_id
+    agg_monthly_revenue_by_payment_method ..> fact_sales : aggregates
+
+    agg_monthly_sales_metrics --> dim_date : month_key
+    agg_monthly_sales_metrics ..> agg_monthly_revenue_by_payment_method : calculates growth
+
+```
+
+## Data Mapping & Transformations
+
+The following table provides a detailed lineage of the transformations applied to the data as it moves from the staging layer into the final mart models.
+
++ +{{ read_csv('../docs/mart_layer_column_mapping.csv') }}
