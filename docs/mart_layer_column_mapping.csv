@@ -51,24 +51,24 @@ agg_customer_order,total_order_amount,fact_sales,order_amount,"COALESCE(SUM(orde
 agg_customer_order,total_order_count,fact_sales,order_id,"COALESCE(COUNT(DISTINCT order_id), 0)"
 agg_customer_order,customer_tier,fact_sales,order_amount,"CASE WHEN total_order_amount >= 1000 THEN 'High Value' WHEN total_order_amount >= 500 THEN 'Medium Value' ELSE 'Low Value' END"
 
-agg_payment_method_order,payment_method,fact_sales,payment_method,Grouped by, direct pass-through
+agg_payment_method_order,payment_method,fact_sales,"payment_method,Grouped by", direct pass-through
 agg_payment_method_order,total_revenue,fact_sales,order_amount,SUM(order_amount)
-agg_payment_method_order,average_order_value,fact_sales,order_amount,order_id,AVG(order_amount)
+agg_payment_method_order,average_order_value,fact_sales,order_amount,"AVG(order_amount) by order_id"
 agg_payment_method_order,order_count,fact_sales,order_id,COUNT(DISTINCT order_id)
 agg_payment_method_order,payment_method_pct,fact_sales,order_amount,(SUM(order_amount) / SUM(total_revenue_overall)) * 100
 
-agg_payment_method_monthly_revenue,month_key,dim_date,month_key,Grouped by, direct pass-through
-agg_payment_method_monthly_revenue,product_category_id,dim_product,product_category_id,Grouped by, direct pass-through
+agg_payment_method_monthly_revenue,month_key,dim_date,"month_key,Grouped by", direct pass-through
+agg_payment_method_monthly_revenue,product_category_id,dim_product,"product_category_id,Grouped by", direct pass-through
 agg_payment_method_monthly_revenue,total_revenue,fact_sales,order_amount,SUM(order_amount)
 agg_payment_method_monthly_revenue,monthly_order_volatility,fact_sales,order_amount,stddev_pop(order_amount)/avg(order_amount)
-agg_payment_method_monthly_revenue,total_revenue_credit_card,fact_sales,order_amount,payment_method,"COALESCE(SUM(CASE WHEN lower(payment_method) = 'credit_card' THEN order_amount END), 0)"
-agg_payment_method_monthly_revenue,total_revenue_bank_transfer,fact_sales,order_amount,payment_method,"COALESCE(SUM(CASE WHEN lower(payment_method) = 'bank_transfer' THEN order_amount END), 0)"
-agg_payment_method_monthly_revenue,total_revenue_paypal,fact_sales,order_amount,payment_method,"COALESCE(SUM(CASE WHEN lower(payment_method) = 'paypal' THEN order_amount END), 0)"
-agg_payment_method_monthly_revenue,total_revenue_debit_card,fact_sales,order_amount,payment_method,"COALESCE(SUM(CASE WHEN lower(payment_method) = 'debit_card' THEN order_amount END), 0)"
-agg_payment_method_monthly_revenue,total_revenue_credit_card_pct,N/A,total_revenue,total_revenue_credit_card,"ROUND(IF(total_revenue = 0, 0, total_revenue_credit_card * 100 / total_revenue), 2)"
-agg_payment_method_monthly_revenue,total_revenue_bank_transfer_pct,N/A,total_revenue,total_revenue_bank_transfer,"ROUND(IF(total_revenue = 0, 0, total_revenue_bank_transfer * 100 / total_revenue), 2)"
-agg_payment_method_monthly_revenue,total_revenue_paypal_pct,N/A,total_revenue,total_revenue_paypal,"ROUND(IF(total_revenue = 0, 0, total_revenue_paypal * 100 / total_revenue), 2)"
-agg_payment_method_monthly_revenue,total_revenue_debit_card_pct,N/A,total_revenue,total_revenue_debit_card,"ROUND(IF(total_revenue = 0, 0, total_revenue_debit_card * 100 / total_revenue), 2)"
+agg_payment_method_monthly_revenue,total_revenue_credit_card,fact_sales,"order_amount,payment_method","COALESCE(SUM(CASE WHEN lower(payment_method) = 'credit_card' THEN order_amount END), 0)"
+agg_payment_method_monthly_revenue,total_revenue_bank_transfer,fact_sales,"order_amount,payment_method","COALESCE(SUM(CASE WHEN lower(payment_method) = 'bank_transfer' THEN order_amount END), 0)"
+agg_payment_method_monthly_revenue,total_revenue_paypal,fact_sales,"order_amount,payment_method","COALESCE(SUM(CASE WHEN lower(payment_method) = 'paypal' THEN order_amount END), 0)"
+agg_payment_method_monthly_revenue,total_revenue_debit_card,fact_sales,"order_amount,payment_method","COALESCE(SUM(CASE WHEN lower(payment_method) = 'debit_card' THEN order_amount END), 0)"
+agg_payment_method_monthly_revenue,total_revenue_credit_card_pct,N/A,"total_revenue,total_revenue_credit_card","ROUND(IF(total_revenue = 0, 0, total_revenue_credit_card * 100 / total_revenue), 2)"
+agg_payment_method_monthly_revenue,total_revenue_bank_transfer_pct,N/A,"total_revenue,total_revenue_bank_transfer","ROUND(IF(total_revenue = 0, 0, total_revenue_bank_transfer * 100 / total_revenue), 2)"
+agg_payment_method_monthly_revenue,total_revenue_paypal_pct,N/A,"total_revenue,total_revenue_paypal","ROUND(IF(total_revenue = 0, 0, total_revenue_paypal * 100 / total_revenue), 2)"
+agg_payment_method_monthly_revenue,total_revenue_debit_card_pct,N/A,"total_revenue,total_revenue_debit_card","ROUND(IF(total_revenue = 0, 0, total_revenue_debit_card * 100 / total_revenue), 2)"
 agg_payment_method_monthly_revenue,load_ts,N/A,N/A,get_current_timestamp()
 
 agg_monthly_sales_metrics,month_key,agg_payment_method_monthly_revenue,month_key,Direct pass-through
