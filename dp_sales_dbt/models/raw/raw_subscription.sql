@@ -1,6 +1,6 @@
 {{
     config (
-      unique_key = "subscription_hash_diff"
+      unique_key = ["subscription_hash_diff", "filename"]
     )
 }}
 with

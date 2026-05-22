@@ -12,7 +12,7 @@
 ### Mart Layer
 **Dimensions:** `dim_date`, `dim_customer`, `dim_product`.  
 **Facts:** `fact_sales`, `fact_customer_interaction`, `fact_weather`, `fact_review_order`.  
-**Aggregates:** `agg_daily_revenue`, `agg_customer_order`, `agg_payment_method_order`, `agg_payment_method_monthly_revenue`, `agg_monthly_sales_metrics`.
+**Aggregates:** `agg_daily_revenue`, `agg_customer_order`, `agg_monthly_revenue_by_payment_method`, `agg_payment_method_monthly_revenue`, `agg_monthly_sales_metrics`.
 
 ---
 
@@ -69,7 +69,7 @@ graph LR
     subgraph Mart_Aggregates
         agg_daily[agg_daily_revenue]
         agg_cust_order[agg_customer_order]
-        agg_pay_method[agg_payment_method_order]
+        agg_pay_method[agg_monthly_revenue_by_payment_method]
         agg_pay_month[agg_payment_method_monthly_revenue]
         agg_metrics[agg_monthly_sales_metrics]
     end

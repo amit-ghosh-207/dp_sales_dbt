@@ -1,6 +1,6 @@
 {{
     config (
-      unique_key = "product_hash_diff"
+      unique_key = ["product_hash_diff", "filename"]
     )
 }}
 with
