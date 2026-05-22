@@ -23,11 +23,8 @@ select
                 total_order_amount * 100.0 / sum(total_order_amount) over ()
             )
         ),
-    2) as percentage_share,
-    get_current_timestamp() as load_ts
+    2) as percentage_share
 from
     cte_agg_order
 order by
-    month_key,
-    product_category_id,
     payment_method
