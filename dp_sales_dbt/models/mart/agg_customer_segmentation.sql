@@ -1,6 +1,6 @@
 {{
     config (
-      materialized = "table"
+      unique_key = ["customer_id"]
     )
 }}
 
@@ -13,7 +13,8 @@ select
         when total_order_amount < 500 then 'Low Value'
         when total_order_amount < 1000 then 'Medium Value'
         else 'High Value'
-    end as customer_tier
+    end as customer_tier,
+    get_current_timestamp() as load_ts
 from
     {{ ref('fact_sales') }} as fs
     right join {{ ref('dim_customer') }} as dc on fs.customer_id = dc.customer_id
@@ -21,7 +22,9 @@ from
 where 1 = 1
     and '{{ dbt_airflow_macros.ds(timezone=none) }}'::date between dc.valid_from::date and dc.valid_to::date
     and dc.status <> 'cancelled'
-
+{% if is_incremental () %}
+   and fs.order_date = '{{ dbt_airflow_macros.ds(timezone=none) }}'::date
+{% endif %}
 group by
     dc.customer_id,
     dc.customer_name
