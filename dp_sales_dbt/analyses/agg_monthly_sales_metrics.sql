@@ -97,7 +97,7 @@ select
             partition by
                 amr.product_category_id
         )
-    ) as worst_monthly_revenue_ind,
+    ) as worst_monthly_revenue_ind
 from
     cte_agg_revenue as amr
     inner join cte_qarters as dd on amr.month_key = dd.month_key
