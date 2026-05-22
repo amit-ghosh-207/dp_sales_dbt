@@ -4,9 +4,11 @@ dim_customer,customer_id,stg_customer,customer_id,Direct pass-through
 dim_customer,customer_name,stg_customer,customer_name,Direct pass-through
 dim_customer,valid_from,stg_customer,valid_from,Direct pass-through
 dim_customer,valid_to,stg_customer,valid_to,Direct pass-through
+
 dim_product,product_id,stg_product,product_id,Direct pass-through
 dim_product,product_name,stg_product,product_name,Direct pass-through
 dim_product,product_category_id,stg_product,product_category_id,Direct pass-through
+
 fact_sales,order_id,stg_sales,order_id,Direct pass-through
 fact_sales,customer_id,stg_sales,customer_id,Direct pass-through
 fact_sales,product_id,stg_sales,product_id,Direct pass-through
@@ -16,14 +18,17 @@ fact_sales,order_quantity,stg_sales,order_quantity,Direct pass-through
 fact_sales,discount_applied,stg_sales,discount_applied,Direct pass-through
 fact_sales,shipping_cost,stg_sales,shipping_cost,Direct pass-through
 fact_sales,payment_method,stg_sales,payment_method,Direct pass-through
+
 fact_customer_interaction,customer_id,stg_customer_interaction,customer_id,Direct pass-through
 fact_customer_interaction,product_id,stg_customer_interaction,product_id,Direct pass-through
 fact_customer_interaction,interaction_type,stg_customer_interaction,interaction_type,Direct pass-through
 fact_customer_interaction,interaction_ts,stg_customer_interaction,interaction_ts,Direct pass-through
+
 fact_weather,weather_date,stg_weather,weather_date,Direct pass-through
 fact_weather,city,stg_weather,city,Direct pass-through
 fact_weather,temperature,stg_weather,temperature,Direct pass-through
 fact_weather,precipitation,stg_weather,precipitation,Direct pass-through
+
 fact_review_order,order_id,fact_sales,order_id,Direct pass-through
 fact_review_order,customer_id,fact_sales,customer_id,Direct pass-through
 fact_review_order,product_id,fact_sales,product_id,Direct pass-through
@@ -33,39 +38,44 @@ fact_review_order,order_quantity,fact_sales,order_quantity,Direct pass-through
 fact_review_order,discount_applied,fact_sales,discount_applied,Direct pass-through
 fact_review_order,shipping_cost,fact_sales,shipping_cost,Direct pass-through
 fact_review_order,payment_method,fact_sales,payment_method,Direct pass-through
-fact_review_order,needs_review_flag,fact_sales,discount_applied,shipping_cost,order_amount,CASE WHEN discount_applied > 0.3 OR shipping_cost > 0.1 * order_amount THEN TRUE ELSE FALSE END
+fact_review_order,needs_review_flag,fact_sales,"discount_applied,shipping_cost,order_amount",CASE WHEN discount_applied > 0.3 OR shipping_cost > 0.1 * order_amount THEN TRUE ELSE FALSE END
+
 agg_daily_revenue,order_date,dim_date,date_key,Direct pass-through (from RIGHT JOIN)
-agg_daily_revenue,total_order_amount,fact_sales,order_amount,COALESCE(SUM(order_amount), 0)
-agg_daily_revenue,order_count,fact_sales,order_id,COALESCE(COUNT(DISTINCT order_id), 0)
-agg_daily_revenue,unique_customer_count,fact_sales,customer_id,COALESCE(COUNT(DISTINCT customer_id), 0)
+agg_daily_revenue,total_order_amount,fact_sales,order_amount,"COALESCE(SUM(order_amount), 0)"
+agg_daily_revenue,order_count,fact_sales,order_id,"COALESCE(COUNT(DISTINCT order_id), 0)"
+agg_daily_revenue,unique_customer_count,fact_sales,customer_id,"COALESCE(COUNT(DISTINCT customer_id), 0)"
+
 agg_customer_order,customer_id,dim_customer,customer_id,Direct pass-through (from RIGHT JOIN)
 agg_customer_order,customer_name,dim_customer,customer_name,Direct pass-through
-agg_customer_order,total_order_amount,fact_sales,order_amount,COALESCE(SUM(order_amount), 0)
-agg_customer_order,total_order_count,fact_sales,order_id,COALESCE(COUNT(DISTINCT order_id), 0)
-agg_customer_order,customer_tier,fact_sales,order_amount,CASE WHEN total_order_amount < 500 THEN 'Low Value' ... END
+agg_customer_order,total_order_amount,fact_sales,order_amount,"COALESCE(SUM(order_amount), 0)"
+agg_customer_order,total_order_count,fact_sales,order_id,"COALESCE(COUNT(DISTINCT order_id), 0)"
+agg_customer_order,customer_tier,fact_sales,order_amount,"CASE WHEN total_order_amount >= 1000 THEN 'High Value' WHEN total_order_amount >= 500 THEN 'Medium Value' ELSE 'Low Value' END"
+
 agg_payment_method_order,payment_method,fact_sales,payment_method,Grouped by, direct pass-through
 agg_payment_method_order,total_revenue,fact_sales,order_amount,SUM(order_amount)
 agg_payment_method_order,average_order_value,fact_sales,order_amount,order_id,AVG(order_amount)
 agg_payment_method_order,order_count,fact_sales,order_id,COUNT(DISTINCT order_id)
 agg_payment_method_order,payment_method_pct,fact_sales,order_amount,(SUM(order_amount) / SUM(total_revenue_overall)) * 100
+
 agg_payment_method_monthly_revenue,month_key,dim_date,month_key,Grouped by, direct pass-through
 agg_payment_method_monthly_revenue,product_category_id,dim_product,product_category_id,Grouped by, direct pass-through
 agg_payment_method_monthly_revenue,total_revenue,fact_sales,order_amount,SUM(order_amount)
 agg_payment_method_monthly_revenue,monthly_order_volatility,fact_sales,order_amount,stddev_pop(order_amount)/avg(order_amount)
-agg_payment_method_monthly_revenue,total_revenue_credit_card,fact_sales,order_amount,payment_method,COALESCE(SUM(CASE WHEN lower(payment_method) = 'credit_card' THEN order_amount END), 0)
-agg_payment_method_monthly_revenue,total_revenue_bank_transfer,fact_sales,order_amount,payment_method,COALESCE(SUM(CASE WHEN lower(payment_method) = 'bank_transfer' THEN order_amount END), 0)
-agg_payment_method_monthly_revenue,total_revenue_paypal,fact_sales,order_amount,payment_method,COALESCE(SUM(CASE WHEN lower(payment_method) = 'paypal' THEN order_amount END), 0)
-agg_payment_method_monthly_revenue,total_revenue_debit_card,fact_sales,order_amount,payment_method,COALESCE(SUM(CASE WHEN lower(payment_method) = 'debit_card' THEN order_amount END), 0)
-agg_payment_method_monthly_revenue,total_revenue_credit_card_pct,N/A,total_revenue,total_revenue_credit_card,ROUND(IF(total_revenue = 0, 0, total_revenue_credit_card * 100 / total_revenue), 2)
-agg_payment_method_monthly_revenue,total_revenue_bank_transfer_pct,N/A,total_revenue,total_revenue_bank_transfer,ROUND(IF(total_revenue = 0, 0, total_revenue_bank_transfer * 100 / total_revenue), 2)
-agg_payment_method_monthly_revenue,total_revenue_paypal_pct,N/A,total_revenue,total_revenue_paypal,ROUND(IF(total_revenue = 0, 0, total_revenue_paypal * 100 / total_revenue), 2)
-agg_payment_method_monthly_revenue,total_revenue_debit_card_pct,N/A,total_revenue,total_revenue_debit_card,ROUND(IF(total_revenue = 0, 0, total_revenue_debit_card * 100 / total_revenue), 2)
+agg_payment_method_monthly_revenue,total_revenue_credit_card,fact_sales,order_amount,payment_method,"COALESCE(SUM(CASE WHEN lower(payment_method) = 'credit_card' THEN order_amount END), 0)"
+agg_payment_method_monthly_revenue,total_revenue_bank_transfer,fact_sales,order_amount,payment_method,"COALESCE(SUM(CASE WHEN lower(payment_method) = 'bank_transfer' THEN order_amount END), 0)"
+agg_payment_method_monthly_revenue,total_revenue_paypal,fact_sales,order_amount,payment_method,"COALESCE(SUM(CASE WHEN lower(payment_method) = 'paypal' THEN order_amount END), 0)"
+agg_payment_method_monthly_revenue,total_revenue_debit_card,fact_sales,order_amount,payment_method,"COALESCE(SUM(CASE WHEN lower(payment_method) = 'debit_card' THEN order_amount END), 0)"
+agg_payment_method_monthly_revenue,total_revenue_credit_card_pct,N/A,total_revenue,total_revenue_credit_card,"ROUND(IF(total_revenue = 0, 0, total_revenue_credit_card * 100 / total_revenue), 2)"
+agg_payment_method_monthly_revenue,total_revenue_bank_transfer_pct,N/A,total_revenue,total_revenue_bank_transfer,"ROUND(IF(total_revenue = 0, 0, total_revenue_bank_transfer * 100 / total_revenue), 2)"
+agg_payment_method_monthly_revenue,total_revenue_paypal_pct,N/A,total_revenue,total_revenue_paypal,"ROUND(IF(total_revenue = 0, 0, total_revenue_paypal * 100 / total_revenue), 2)"
+agg_payment_method_monthly_revenue,total_revenue_debit_card_pct,N/A,total_revenue,total_revenue_debit_card,"ROUND(IF(total_revenue = 0, 0, total_revenue_debit_card * 100 / total_revenue), 2)"
 agg_payment_method_monthly_revenue,load_ts,N/A,N/A,get_current_timestamp()
+
 agg_monthly_sales_metrics,month_key,agg_payment_method_monthly_revenue,month_key,Direct pass-through
 agg_monthly_sales_metrics,product_category_id,agg_payment_method_monthly_revenue,product_category_id,Direct pass-through
 agg_monthly_sales_metrics,total_revenue,agg_payment_method_monthly_revenue,total_revenue,Direct pass-through
-agg_monthly_sales_metrics,quarterly_total_revenue,agg_payment_method_monthly_revenue,total_revenue,SUM(total_revenue) OVER (PARTITION BY quarter_key ORDER BY month_key)
-agg_monthly_sales_metrics,qoq_growth_rate,agg_payment_method_monthly_revenue,total_revenue,(total_revenue - LAG(total_revenue, 3) OVER (...)) / LAG(total_revenue, 3) OVER (...)
-agg_monthly_sales_metrics,best_month_flag,agg_payment_method_monthly_revenue,total_revenue,CASE WHEN RANK() OVER (PARTITION BY product_category_id ORDER BY total_revenue DESC) = 1 THEN TRUE ELSE FALSE END
-agg_monthly_sales_metrics,worst_month_flag,agg_payment_method_monthly_revenue,total_revenue,CASE WHEN RANK() OVER (PARTITION BY product_category_id ORDER BY total_revenue ASC) = 1 THEN TRUE ELSE FALSE END
-agg_monthly_sales_metrics,sales_volatility_coefficient,agg_payment_method_monthly_revenue,monthly_order_volatility,Direct pass-through (or further aggregation)
+agg_monthly_sales_metrics,quarterly_total_revenue,agg_payment_method_monthly_revenue,total_revenue,"SUM(total_revenue) OVER (PARTITION BY quarter_key ORDER BY month_key)"
+agg_monthly_sales_metrics,qoq_growth_rate,agg_payment_method_monthly_revenue,total_revenue,"(total_revenue - LAG(total_revenue, 3) OVER (PARTITION BY product_category_id ORDER BY month_key)) / NULLIF(LAG(total_revenue, 3) OVER (PARTITION BY product_category_id ORDER BY month_key), 0)"
+agg_monthly_sales_metrics,best_month_flag,agg_payment_method_monthly_revenue,total_revenue,"CASE WHEN RANK() OVER (PARTITION BY product_category_id ORDER BY total_revenue DESC) = 1 THEN TRUE ELSE FALSE END"
+agg_monthly_sales_metrics,worst_month_flag,agg_payment_method_monthly_revenue,total_revenue,"CASE WHEN RANK() OVER (PARTITION BY product_category_id ORDER BY total_revenue ASC) = 1 THEN TRUE ELSE FALSE END"
+agg_monthly_sales_metrics,sales_volatility_coefficient,agg_payment_method_monthly_revenue,monthly_order_volatility,Direct pass-through
