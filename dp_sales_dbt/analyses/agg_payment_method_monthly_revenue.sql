@@ -1,9 +1,3 @@
-{{
-    config (
-      unique_key = ["month_key", "product_category_id"]
-    )
-}}
-
 with cte_agg_revenue as
     (
         select
@@ -86,11 +80,6 @@ select
     total_revenue_debit_card_pct,
     get_current_timestamp() as load_ts
 from cte_agg_revenue
-
-{% if is_incremental () %}
-where
-  month_key in (
-    select month_key from {{ ref('dim_date') }}
-    where date_key = '{{ dbt_airflow_macros.ds(timezone=none) }}'::date
-  )
-{% endif %}
+order by
+    month_key,
+    product_category_id
